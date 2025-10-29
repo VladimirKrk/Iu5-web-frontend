@@ -7,16 +7,16 @@ const MOCK_WORKSHOPS: IWorkshop[] = [
     name: 'Mock Кузница', 
     description: 'Здесь куют мечи, когда бэкенд спит.', 
     century: 'XI', 
-    image_key: null, 
-    extra_image_key: null
+    image_key: '/img/test.jpeg',
+    extra_image_key: '/img/extra_test.jpeg'
   },
   { 
     id: 2, 
     name: 'Mock Гончарная', 
     description: 'Лепим горшки в оффлайне.', 
     century: 'XII', 
-    image_key: null,
-    extra_image_key: null
+    image_key: '/img/test.jpeg',
+    extra_image_key: '/img/extra_test.jpeg'
   }
 ];
 

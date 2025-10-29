@@ -3,6 +3,16 @@ import { useParams } from 'react-router-dom';
 import { fetchWorkshopById } from '../services/api';
 import type { IWorkshop } from '../types';
 
+const getImageUrl = (key: string | null) => {
+    if (!key) {
+        return '/img/placeholder.png';
+    }
+    if (key.startsWith('/img/')) {
+        return key;
+    }
+    return `/vlk-images/${key}`;
+};
+
 const WorkshopDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const [workshop, setWorkshop] = useState<IWorkshop | null>(null);
@@ -25,13 +35,13 @@ const WorkshopDetailPage = () => {
         setLoading(false);
       }
     };
-
+    
     loadWorkshop();
   }, [id]);
+  
+  const imageUrl = getImageUrl(workshop?.image_key ?? null);
+  const extraImageUrl = getImageUrl(workshop?.extra_image_key ?? null);
 
-
-  const imageUrl = workshop?.image_key ? `/vlk-images/${workshop.image_key}` : '/img/placeholder.png';
-  const extraImageUrl = workshop?.extra_image_key ? `/vlk-images/${workshop.extra_image_key}` : '/img/placeholder.png';
 
   if (loading) {
     return <main className="main"><p>Загрузка информации о мастерской...</p></main>;
