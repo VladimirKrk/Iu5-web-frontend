@@ -1,4 +1,3 @@
-// vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -7,17 +6,17 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // Все запросы, начинающиеся с /api, будут перенаправлены на ваш бэкенд
       '/api': {
-        target: 'http://localhost:8080', // Адрес вашего Go-сервиса
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false,
       },
-      // Прокси для изображений из MinIO
-      '/vlc-images': {
-         target: 'http://localhost:9000', // Адрес MinIO
-         changeOrigin: true,
-         secure: false,
+      
+      '/vlk-images': {
+        // Целимся прямо в бакет
+        target: 'http://localhost:9000/vlk-images', 
+        changeOrigin: true,
+        // Убираем из пути запроса название бакета, чтобы оно не дублировалось
+        rewrite: (path) => path.replace(/^\/vlk-images/, ''),
       }
     }
   }
