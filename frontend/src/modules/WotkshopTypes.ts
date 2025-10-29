@@ -1,4 +1,3 @@
-
 export interface IWorkshop {
   id: number;
   name: string;
