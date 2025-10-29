@@ -25,7 +25,7 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
         .then(setWorkshops)
         .catch(err => console.error(err))
         .finally(() => setLoading(false));
-    }, 300); // Небольшая задержка для "живого" поиска
+    }, 300); 
 
     return () => clearTimeout(handler);
   }, [searchTerm]);

@@ -8,8 +8,8 @@ import { addToCart, fetchCartInfo } from './modules/WorkshopApi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-
-  const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjIwMDAzNDMsImlzX21vZGVyYXRvciI6ZmFsc2UsInVzZXJfaWQiOjN9.pXNpYGKgMoD10pnGYufUULBwFvgbBMRP7lDXRkdwcU4";
+//auth token of creator_id = 3
+  const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjIwMTA5MTUsImlzX21vZGVyYXRvciI6ZmFsc2UsInVzZXJfaWQiOjN9.plg2H7XuCUtq5s8GTGZ0zY45WYZajyVs0Drrbbri1Xg";
 
   const [itemCount, setItemCount] = useState(0);
 
