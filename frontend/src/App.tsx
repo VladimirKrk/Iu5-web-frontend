@@ -8,8 +8,8 @@ import { addToCart, fetchCartInfo } from './modules/WorkshopApi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  // --- ВАЖНО: Вставьте сюда ваш JWT токен! ---
-  const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzA0NTExNzcsImlzX21vZGVyYXRvciI6ZmFsc2UsInVzZXJfaWQiOjF9.e89R1Lp-jR1CgGgF8e7Y_tG1f0wZ0c0p0zX1gY4Z9Y4";
+
+  const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjIwMDAzNDMsImlzX21vZGVyYXRvciI6ZmFsc2UsInVzZXJfaWQiOjN9.pXNpYGKgMoD10pnGYufUULBwFvgbBMRP7lDXRkdwcU4";
 
   const [itemCount, setItemCount] = useState(0);
 

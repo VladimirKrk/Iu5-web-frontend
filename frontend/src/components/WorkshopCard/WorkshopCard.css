@@ -1,12 +1,14 @@
+/* src/components/WorkshopCard/WorkshopCard.css */
+
 .card {
     width: 412px;
-    border-radius: 15px;
+    border-radius: 15px; /* Ваше закругление */
     overflow: hidden;
     border: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
-    background-color: #FFFFFF;
+    background-color: #e9e9e9; /* Ваш цвет фона */
 }
 
 .card:hover {
@@ -15,8 +17,9 @@
 }
 
 .card-image-wrapper {
-    background-color: #E9E9E9;
+    /* Убираем фон отсюда, так как он теперь на всей карточке */
     padding-top: 20px;
+    background-color: transparent; 
 }
 
 .card-image {
@@ -32,7 +35,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex-grow: 1;
+    background-color: E9E9E9; 
 }
 
 .card-title {
@@ -54,6 +57,7 @@
     margin-right: auto;
     color: #000;
 }
+
 
 .card-button {
     width: auto;
