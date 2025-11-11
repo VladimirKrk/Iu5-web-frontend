@@ -6,6 +6,9 @@ import { BreadCrumbs } from "../../components/BreadCrumbs/Breadcrumbs.tsx";
 import { fetchWorkshops } from '../../modules/WorkshopApi';
 import type { IWorkshop } from "../../modules/WotkshopTypes";
 import { ROUTE_LABELS } from '../../Routes';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState, AppDispatch } from '../../store/store'; 
+import { setSearchTerm } from '../../store/slices/filterSlice'; 
 import './WorkshopListPage.css';
 
 interface WorkshopListPageProps {
@@ -16,25 +19,30 @@ interface WorkshopListPageProps {
 export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, onAddToCart }) => {
   const [workshops, setWorkshops] = useState<IWorkshop[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [searchTerm, setSearchTerm] = useState<string>('');
   
+  // searchTerm из Redux - это то, по чему мы УЖЕ выполнили поиск.
+  const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
+  const dispatch = useDispatch<AppDispatch>();
 
-  // 1. Создаем функцию, которая будет выполнять поиск
-  const handleSearch = () => {
+  // inputValue - это то, что пользователь вводит в поле ПРЯМО СЕЙЧАС.
+  const [inputValue, setInputValue] = useState(searchTerm);
+
+  // useEffect теперь зависит только от searchTerm из Redux.
+  // Он сработает только тогда, когда мы нажмем кнопку "Найти".
+  useEffect(() => {
     setLoading(true);
     fetchWorkshops(searchTerm)
       .then(setWorkshops)
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
+  }, [searchTerm]);
+
+  // Эта функция будет вызвана при клике на кнопку поиска
+  const handleSearch = () => {
+    // Мы диспатчим action, чтобы обновить searchTerm в Redux.
+    // Это, в свою очередь, вызовет useEffect для нового поиска.
+    dispatch(setSearchTerm(inputValue));
   };
-
-  // 2. Изменяем useEffect: теперь он запускается ТОЛЬКО ОДИН РАЗ при загрузке страницы,
-  // чтобы показать все мастерские. Он больше не следит за searchTerm.
-  useEffect(() => {
-    // searchTerm здесь пустой, поэтому fetchWorkshops загрузит всё
-    handleSearch(); 
-  }, []); // <-- Пустой массив зависимостей означает "выполнить один раз"
-
 
   return (
     <div className="page-wrapper">
@@ -44,9 +52,9 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
       <div className="search-section">
         <div className="search-container">
           <Search 
-            query={searchTerm} 
-            onQueryChange={setSearchTerm} 
-            onSearchClick={handleSearch}
+            query={inputValue} // Поле ввода управляется inputValue
+            onQueryChange={setInputValue} // При вводе меняем только inputValue
+            onSearchClick={handleSearch} // При клике вызываем нашу функцию поиска
           />
           
           <a href="#" className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}>
