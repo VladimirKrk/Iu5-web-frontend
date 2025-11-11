@@ -1,0 +1,77 @@
+.page-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.detail-page-main {
+  padding-top: 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title-section {
+  position: relative;
+  width: 100%;
+  margin-bottom: 101px;
+}
+
+.title-wrapper {
+  padding-left: 64px;
+}
+
+.detail-title {
+  margin: 0;
+  font-size: 52px;
+  font-weight: 400;
+  color: #000;
+}
+
+.detail-century {
+  font-size: 52px;
+  font-weight: 700;
+  color: #000;
+  position: absolute;
+  top: 0;
+  right: 63px;
+  margin: 0;
+}
+
+.content-row {
+  display: flex;
+  align-items: flex-start;
+  padding-left: 64px;
+  padding-right: 57px;
+}
+
+.photo-gallery {
+  display: flex;
+  gap: 25px;
+  flex-shrink: 0;
+}
+
+.photo-card {
+  width: 393px;
+  height: 393px;
+  background-color: #E9E9E9;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-card img {
+  width: 353px;
+  height: 353px;
+  object-fit: cover;
+}
+
+.description-wrapper {
+  margin-left: 80px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.7;
+  text-align: justify;
+  color: #333333;
+}

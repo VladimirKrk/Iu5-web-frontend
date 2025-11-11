@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #FFFFFF;
+  color: #000000;
+  overflow-x: hidden; /* Предотвращает горизонтальную прокрутку */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:focus,
+button:focus,
+input:focus,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: none;
+  box-shadow: none; /* Также убираем тень, которую некоторые фреймворки добавляют при фокусе */
+}
