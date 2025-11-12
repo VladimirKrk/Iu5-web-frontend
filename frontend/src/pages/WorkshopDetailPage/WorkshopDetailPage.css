@@ -75,3 +75,68 @@
   text-align: justify;
   color: #333333;
 }
+
+/* Для экранов меньше 1024px */
+@media (max-width: 1024px) {
+    .content-row {
+        flex-direction: column; /* Ставим элементы в колонку */
+        align-items: center;   /* Центрируем их по горизонтали */
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .description-wrapper {
+        margin-left: 0;      /* Убираем большой отступ слева */
+        margin-top: 40px;    /* Добавляем отступ сверху */
+        text-align: left;    /* Выравнивание по левому краю на мобильных выглядит лучше */
+    }
+
+    .photo-gallery {
+        justify-content: center;
+    }
+
+    .title-section {
+        margin-bottom: 60px;
+        position: static; /* Убираем position: relative, оно больше не нужно */
+        text-align: center; /* Центрируем текст на мобильных */
+    }
+
+    .title-wrapper {
+        padding-left: 0; /* Убираем отступ */
+        margin-bottom: 10px; /* Добавляем отступ между заголовком и веком */
+    }
+
+    .detail-title, .detail-century {
+        font-size: 36px;
+    }
+
+    .detail-century {
+        position: static; /* Убираем абсолютное позиционирование */
+        right: auto;      /* Сбрасываем все значения позиционирования */
+        top: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .photo-gallery {
+        flex-direction: column; /* Картинки теперь друг под другом */
+        width: 100%; /* Галерея занимает всю ширину */
+    }
+
+    .photo-card {
+        width: 100%; /* Серая карточка-контейнер занимает всю доступную ширину */
+        height: auto; /* Высота подстраивается под содержимое */
+        /* Сохраняем соотношение сторон, чтобы карточка оставалась примерно квадратной */
+        aspect-ratio: 1 / 1; 
+    }
+
+    .photo-card img {
+        /* Картинка занимает почти всю ширину серой карточки, оставляя красивые отступы */
+        width: calc(100% - 40px); 
+        height: calc(100% - 40px);
+    }
+
+    .detail-title, .detail-century {
+        font-size: 28px; 
+    }
+}
