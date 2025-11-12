@@ -11,9 +11,9 @@ import './WorkshopDetailPage.css';
 // Эта функция должна быть здесь, так как она специфична для этой страницы
 const getImageUrl = (key: string | null): string => { // Явно указываем, что возвращается строка
     if (!key) {
-        return '/img/placeholder.png';
+        return 'img/placeholder.png';
     }
-    if (key.startsWith('/img/')) {
+    if (key.startsWith('img/')) {
         return key;
     }
     return `/vlk-images/${key}`; // Исправлен синтаксис

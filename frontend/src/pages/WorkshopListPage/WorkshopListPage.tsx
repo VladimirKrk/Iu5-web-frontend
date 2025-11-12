@@ -50,7 +50,7 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
           />
           
           <a href="#" className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}>
-              <img src="/img/cart.png" alt="Корзина" />
+              <img src="img/cart.png" alt="Корзина" />
               <span className="cart-count">{itemCount}</span>
           </a>
         </div>
