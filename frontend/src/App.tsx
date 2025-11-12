@@ -33,7 +33,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter basename="/lu5-web-frontend/">
+    <BrowserRouter basename="/Iu5-web-frontend/">
       <Routes>
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.WORKSHOPS} element={
