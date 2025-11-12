@@ -29,7 +29,7 @@ export default function Search({ query, onQueryChange, onSearchClick }: SearchPr
         <button
             type="button"
             className="search-button" 
-            style={{ backgroundImage: "url('/img/search.png')" }}
+            style={{ backgroundImage: "url('img/search.png')" }}
             onClick={onSearchClick} 
         />
     </div>

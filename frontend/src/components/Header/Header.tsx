@@ -7,7 +7,7 @@ export default function Header() {
     <header className="header">
         <div className="header-container">
             <Link to={ROUTES.HOME} className="logo">
-                <img src="/img/logo.png" alt="VLK Logo" />
+                <img src="img/logo.png" alt="VLK Logo" />
             </Link>
         </div>
     </header>

@@ -3,8 +3,8 @@ import type { IWorkshop } from "../../modules/WotkshopTypes";
 import './WorkshopCard.css';
 
 const getImageUrl = (key: string | null) => {
-    if (!key) return '/img/placeholder.png'; // Создайте этот файл-заглушку в public/img
-    if (key.startsWith('/img/')) return key;
+    if (!key) return 'img/placeholder.png'; // Создайте этот файл-заглушку в public/img
+    if (key.startsWith('img/')) return key;
     return `/vlk-images/${key}`;
 };
 
