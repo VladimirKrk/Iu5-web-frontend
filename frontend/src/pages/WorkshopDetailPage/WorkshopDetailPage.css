@@ -97,33 +97,46 @@
 
     .title-section {
         margin-bottom: 60px;
+        position: static; /* Убираем position: relative, оно больше не нужно */
+        text-align: center; /* Центрируем текст на мобильных */
+    }
+
+    .title-wrapper {
+        padding-left: 0; /* Убираем отступ */
+        margin-bottom: 10px; /* Добавляем отступ между заголовком и веком */
     }
 
     .detail-title, .detail-century {
         font-size: 36px;
     }
 
-    .title-wrapper {
-        padding-left: 20px;
-    }
-
     .detail-century {
-        right: 20px;
+        position: static; /* Убираем абсолютное позиционирование */
+        right: auto;      /* Сбрасываем все значения позиционирования */
+        top: auto;
     }
 }
 
 @media (max-width: 768px) {
     .photo-gallery {
-        flex-direction: column; /* Картинки теперь тоже друг под другом */
+        flex-direction: column; /* Картинки теперь друг под другом */
+        width: 100%; /* Галерея занимает всю ширину */
     }
 
     .photo-card {
-        width: 100%; /* Карточки занимают всю доступную ширину */
+        width: 100%; /* Серая карточка-контейнер занимает всю доступную ширину */
+        height: auto; /* Высота подстраивается под содержимое */
+        /* Сохраняем соотношение сторон, чтобы карточка оставалась примерно квадратной */
+        aspect-ratio: 1 / 1; 
     }
 
     .photo-card img {
-        width: calc(100% - 40px); /* Делаем отступы внутри серой карточки */
-        height: auto;
-        aspect-ratio: 1 / 1; /* Сохраняем квадратную пропорцию */
+        /* Картинка занимает почти всю ширину серой карточки, оставляя красивые отступы */
+        width: calc(100% - 40px); 
+        height: calc(100% - 40px);
+    }
+
+    .detail-title, .detail-century {
+        font-size: 28px; 
     }
 }
