@@ -75,3 +75,55 @@
   text-align: justify;
   color: #333333;
 }
+
+/* Для экранов меньше 1024px */
+@media (max-width: 1024px) {
+    .content-row {
+        flex-direction: column; /* Ставим элементы в колонку */
+        align-items: center;   /* Центрируем их по горизонтали */
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .description-wrapper {
+        margin-left: 0;      /* Убираем большой отступ слева */
+        margin-top: 40px;    /* Добавляем отступ сверху */
+        text-align: left;    /* Выравнивание по левому краю на мобильных выглядит лучше */
+    }
+
+    .photo-gallery {
+        justify-content: center;
+    }
+
+    .title-section {
+        margin-bottom: 60px;
+    }
+
+    .detail-title, .detail-century {
+        font-size: 36px;
+    }
+
+    .title-wrapper {
+        padding-left: 20px;
+    }
+
+    .detail-century {
+        right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .photo-gallery {
+        flex-direction: column; /* Картинки теперь тоже друг под другом */
+    }
+
+    .photo-card {
+        width: 100%; /* Карточки занимают всю доступную ширину */
+    }
+
+    .photo-card img {
+        width: calc(100% - 40px); /* Делаем отступы внутри серой карточки */
+        height: auto;
+        aspect-ratio: 1 / 1; /* Сохраняем квадратную пропорцию */
+    }
+}
