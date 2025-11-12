@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Iu5-web-frontend/sw.js', { scope: '/Iu5-web-frontend/' })})}
