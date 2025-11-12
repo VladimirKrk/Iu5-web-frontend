@@ -7,6 +7,7 @@ import { WorkshopDetailPage } from './pages/WorkshopDetailPage/WorkshopDetailPag
 import { addToCart, fetchCartInfo } from './modules/WorkshopApi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function App() {
 //auth token of creator_id = 3
   const AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjIwMTA5MTUsImlzX21vZGVyYXRvciI6ZmFsc2UsInVzZXJfaWQiOjN9.plg2H7XuCUtq5s8GTGZ0zY45WYZajyVs0Drrbbri1Xg";
@@ -32,7 +33,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/lu5-web-frontend/">
       <Routes>
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.WORKSHOPS} element={
