@@ -18,17 +18,23 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setLoading(true);
-      fetchWorkshops(searchTerm)
-        .then(setWorkshops)
-        .catch(err => console.error(err))
-        .finally(() => setLoading(false));
-    }, 300); 
 
-    return () => clearTimeout(handler);
-  }, [searchTerm]);
+  // 1. Создаем функцию, которая будет выполнять поиск
+  const handleSearch = () => {
+    setLoading(true);
+    fetchWorkshops(searchTerm)
+      .then(setWorkshops)
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  };
+
+  // 2. Изменяем useEffect: теперь он запускается ТОЛЬКО ОДИН РАЗ при загрузке страницы,
+  // чтобы показать все мастерские. Он больше не следит за searchTerm.
+  useEffect(() => {
+    // searchTerm здесь пустой, поэтому fetchWorkshops загрузит всё
+    handleSearch(); 
+  }, []); // <-- Пустой массив зависимостей означает "выполнить один раз"
+
 
   return (
     <div className="page-wrapper">
@@ -37,7 +43,11 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
       
       <div className="search-section">
         <div className="search-container">
-          <Search query={searchTerm} onQueryChange={setSearchTerm} />
+          <Search 
+            query={searchTerm} 
+            onQueryChange={setSearchTerm} 
+            onSearchClick={handleSearch}
+          />
           
           <a href="#" className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}>
               <img src="/img/cart.png" alt="Корзина" />

@@ -1,20 +1,20 @@
 import './Search.css';
 
-/**
- * Интерфейс для пропсов компонента Search.
- * @param query - Текущее значение поискового запроса.
- * @param onQueryChange - Функция обратного вызова, которая вызывается при каждом изменении текста в поле ввода.
- */
 interface SearchProps {
   query: string;
   onQueryChange: (query: string) => void;
+  onSearchClick: () => void; //вызов по клику
 }
 
-/**
- * "Глупый" компонент, отвечающий только за отображение поля поиска.
- * Всю логику поиска (отправку запросов, таймеры) обрабатывает родительский компонент.
- */
-export default function Search({ query, onQueryChange }: SearchProps) {
+export default function Search({ query, onQueryChange, onSearchClick }: SearchProps) {
+  
+  // Функция вызывается при нажатии Enter в поле ввода
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onSearchClick();
+    }
+  };
+
   return (
     <div className="search-form">
         <input 
@@ -22,14 +22,16 @@ export default function Search({ query, onQueryChange }: SearchProps) {
             className="search-input" 
             placeholder="Найти мастерскую..." 
             value={query}
-            // При каждом изменении вызываем функцию, переданную из родителя
             onChange={(e) => onQueryChange(e.target.value)}
+            onKeyDown={handleKeyDown} 
         />
-        {/* Убедитесь, что файл search.png находится в папке /public/img/ */}
-        <div 
+        {/* Кнопка поиска */  }
+        <button
+            type="button"
             className="search-button" 
             style={{ backgroundImage: "url('/img/search.png')" }}
-        ></div>
+            onClick={onSearchClick} 
+        />
     </div>
   );
 }
