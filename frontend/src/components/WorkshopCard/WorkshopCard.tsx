@@ -4,9 +4,10 @@ import './WorkshopCard.css';
 
 const getImageUrl = (key: string | null) => {
     if (!key) return '/img/placeholder.png'; // Создайте этот файл-заглушку в public/img
-    if (key.startsWith('/img/')) return key;
+    if (key.startsWith('/img/')) return key; 
     return `/vlk-images/${key}`;
 };
+//<button type="button" className="card-button card-button-primary" onClick={handleAddToCartClick}>В корзину</button>
 
 interface WorkshopCardProps {
   workshop: IWorkshop;
@@ -16,10 +17,10 @@ interface WorkshopCardProps {
 export const WorkshopCard: React.FC<WorkshopCardProps> = ({ workshop, onAddToCart }) => {
   const imageUrl = getImageUrl(workshop.image_key);
 
-  const handleAddToCartClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    onAddToCart(workshop.id);
-  };
+  //const handleAddToCartClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //  event.preventDefault();
+  //  onAddToCart(workshop.id);
+  //};
 
   return (
     <div className="card">
@@ -31,11 +32,8 @@ export const WorkshopCard: React.FC<WorkshopCardProps> = ({ workshop, onAddToCar
             <h3 className="card-title">{workshop.name}</h3>
         </div>
         <div className="card-footer">
-          <p className="card-century">{workshop.century}</p>
+          <p className="card-century">{workshop.century}</p> 
           <Link to={`/workshops/${workshop.id}`} className="card-button">Подробнее</Link>
-          <button type="button" className="card-button card-button-primary" onClick={handleAddToCartClick}>
-            В корзину
-          </button>
         </div>
       </div>
     </div>
