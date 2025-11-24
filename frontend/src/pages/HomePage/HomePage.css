@@ -79,19 +79,3 @@
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
 }
 
-.hero-button {
-  display: inline-block;
-  padding: 15px 30px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #000;
-  background-color: #fff;
-  border-radius: 50px;
-  text-decoration: none;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.hero-button:hover {
-  background-color: #f0f0f0;
-  transform: scale(1.05);
-}
