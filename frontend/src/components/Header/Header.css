@@ -1,23 +1,68 @@
+
 .header {
-    background-color: #FFFFFF;
-    padding: 15px 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #FFFFFF;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .header-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
 }
 
 .logo img {
-    height: 18px;
-    width: 55px;
-    display: block;
+  height: 24px;
+  display: block;
+}
+
+.header-nav {
+  display: flex;
+  gap: 20px;
+  margin-left: 60px; /* Отступ от логотипа */
+}
+
+.nav-link {
+  color: #000000; /* Ссылка по умолчанию ЧЕРНАЯ */
+  text-decoration: none;
+  font-size: 2rem;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #555555;
+}
+
+
+/* ================================================= */
+/* ===        СПЕЦИАЛЬНЫЕ СТИЛИ ДЛЯ HOMEPAGE       === */
+/* === (эти правила работают, только когда хедер  === */
+/* ===   находится внутри .home-page-wrapper)    === */
+/* ================================================= */
+
+/* 1. Делаем сам хедер на главной странице прозрачным */
+.home-page-wrapper .header {
+  background-color: transparent; /* Убираем белый фон */
+  box-shadow: none;              /* Убираем тень */
+  position: absolute;            /* Позиционируем поверх видео */
+  width: 100%;
+}
+
+/* 2. Делаем ссылку внутри этого хедера БЕЛОЙ */
+.home-page-wrapper .nav-link {
+  color: #ffffff;
+}
+
+/* 3. Задаем эффект при наведении для белой ссылки */
+.home-page-wrapper .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Легкая подсветка */
+  color: #ffffff; /* Убедимся, что цвет не меняется на черный */
 }

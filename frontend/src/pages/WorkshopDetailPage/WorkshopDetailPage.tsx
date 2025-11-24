@@ -9,14 +9,24 @@ import { ROUTE_LABELS, ROUTES } from '../../Routes';
 import './WorkshopDetailPage.css';
 
 // Эта функция должна быть здесь, так как она специфична для этой страницы
-const getImageUrl = (key: string | null): string => { // Явно указываем, что возвращается строка
-    if (!key) {
-        return 'img/placeholder.png';
-    }
-    if (key.startsWith('img/')) {
-        return key;
-    }
-    return `/vlk-images/${key}`; // Исправлен синтаксис
+const getImageUrl = (key: string | null): string => {
+  // Получаем базовый URL из переменных окружения Vite
+  // В вашем случае это будет '/Iu5-web-frontend/'
+  const baseUrl = import.meta.env.BASE_URL;
+
+  if (!key) {
+    // Для заглушки тоже строим полный путь
+    return `${baseUrl}img/placeholder.png`;
+  }
+
+  // Если ключ - это путь к локальной картинке в /public
+  if (key.startsWith('img/')) {
+    // Собираем полный, правильный путь: /Iu5-web-frontend/ + img/test.jpeg
+    return `${baseUrl}${key}`;
+  }
+
+  // Если это ключ для MinIO, он идет через прокси, и ему не нужен baseUrl
+  return `/vlk-images/${key}`;
 };
 
 export const WorkshopDetailPage = () => {

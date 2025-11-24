@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 export default defineConfig({
   base: '/Iu5-web-frontend/',
@@ -18,7 +19,8 @@ export default defineConfig({
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' }
         ]
       }
-    })
+    }),
+    basicSsl(),
   ],
   server: {
     proxy: {
