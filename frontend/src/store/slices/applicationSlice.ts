@@ -37,12 +37,11 @@ export const addToCartAsync = createAsyncThunk(
     if (!token) {
       return rejectWithValue('Пользователь не авторизован');
     }
-    
     // Настраиваем авторизацию для сгенерированного клиента
-    api.setSecurityData(`Bearer ${token}`);
+    //api.setSecurityData(`Bearer ${token}`); не нужно?
     
     try {
-      await api.workshopProduction.itemsCreate({ workshop_id: workshopId });
+      await api.workshopProduction.itemsCreate({ workshop_id: workshopId }, { secure: true });//
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Не удалось добавить в корзину');
     }
@@ -58,6 +57,10 @@ const applicationSlice = createSlice({
       .addCase(addToCartAsync.pending, (state) => {
         state.loading = 'pending';
         state.error = null;
+      })
+      .addCase(addToCartAsync.fulfilled, (state) => {
+        state.loading = 'idle';
+        state.itemCount += 1; // Увеличиваем счетчик при успехе
       })
       .addCase(fetchCartInfoAsync.fulfilled, (state, action) => {
         state.itemCount = action.payload.item_count || 0;
