@@ -1,15 +1,8 @@
 import { Link } from 'react-router-dom';
-
+import { getImageUrl } from '../../utils/getImageUrl';
 import type { ApiTypesWorkshopResponse as WorkshopResponse } from "../../api/Api";
 import './WorkshopCard.css';
 
-const getImageUrl = (key: string | null | undefined) => {
-    // Добавим import.meta.env.BASE_URL для корректной работы с `base` в Vite
-    const baseUrl = import.meta.env.BASE_URL;
-    if (!key) return `${baseUrl}img/placeholder.png`;
-    if (key.startsWith('img/')) return `${baseUrl}${key}`;
-    return `/vlk-images/${key}`;
-};
 
 interface WorkshopCardProps {
   workshop: WorkshopResponse;

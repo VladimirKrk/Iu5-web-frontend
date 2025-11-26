@@ -2,12 +2,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { ApiTypesUserLoginRequest as UserLoginRequest } from '../../api/Api';
-import type { RootState } from '../store';
+import { fetchCartInfoAsync, addToCartAsync } from './applicationSlice';  // Импортируем thunk из другого слайса
 
 interface UserState {
   isAuthenticated: boolean;
   token: string | null;
-  username: string | null; // Будем хранить имя пользователя
+  username: string | null;
+  draftApplicationId: number | null; // ID активного черновика
+  itemCount: number; // Общее количество товаров в черновике
   loading: 'idle' | 'pending';
   error: string | null;
 }
@@ -16,6 +18,8 @@ const initialState: UserState = {
   isAuthenticated: false,
   token: null,
   username: null,
+  draftApplicationId: null,
+  itemCount: 0,
   loading: 'idle',
   error: null,
 };
@@ -24,10 +28,19 @@ const initialState: UserState = {
 
 export const loginUserAsync = createAsyncThunk(
   'user/login',
-  async (credentials: UserLoginRequest, { rejectWithValue }) => {
+  async (credentials: UserLoginRequest, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.login.loginCreate(credentials);
-      return { token: response.data.token, username: credentials.login }; // Возвращаем токен и логин
+      const token = response.data.token;
+      
+      // Сразу после успешного логина, запускаем загрузку информации о корзине
+      if (token) {
+        // Устанавливаем токен для будущих запросов
+        api.setSecurityData(token); 
+        dispatch(fetchCartInfoAsync());
+      }
+      
+      return { token, username: credentials.login };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Ошибка авторизации');
     }
@@ -36,20 +49,15 @@ export const loginUserAsync = createAsyncThunk(
 
 export const logoutUserAsync = createAsyncThunk(
   'user/logout',
-  async (_, { getState, rejectWithValue }) => {
-    const token = (getState() as RootState).user.token;
-    if (!token) return; // Если токена нет, просто выходим
-
+  async (_, { rejectWithValue }) => {
     try {
-      // Устанавливаем токен для запроса
-      api.setSecurityData(`Bearer ${token}`);
-      await api.logout.logoutCreate();
+      // securityWorker сам подставит токен, если он есть
+      await api.logout.logoutCreate({ secure: true });
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Ошибка выхода');
     }
   }
 );
-
 
 const userSlice = createSlice({
   name: 'user',
@@ -74,13 +82,22 @@ const userSlice = createSlice({
       })
       // Logout
       .addCase(logoutUserAsync.fulfilled, (state) => {
-        // Сбрасываем все до начального состояния
         Object.assign(state, initialState);
+        api.setSecurityData(null); // Очищаем токен в API клиенте
       })
       .addCase(logoutUserAsync.rejected, (state, action) => {
-        // Даже если выход с ошибкой, разлогиниваем на фронте
         Object.assign(state, initialState);
+        api.setSecurityData(null);
         console.error('Ошибка при выходе на сервере:', action.payload);
+      })
+      // Обновляем ID и количество из applicationSlice
+      .addCase(fetchCartInfoAsync.fulfilled, (state, action) => {
+          state.itemCount = action.payload.item_count || 0;
+          state.draftApplicationId = action.payload.application_id || null;
+      })
+      // При добавлении в корзину, просто увеличиваем счетчик
+      .addCase(addToCartAsync.fulfilled, (state) => {
+          state.itemCount += 1;
       });
   },
 });

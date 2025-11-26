@@ -4,9 +4,9 @@ import Header from '../../components/Header/Header';
 import WorkshopList from '../../components/WorkshopList/WorkshopList';
 import Search from '../../components/Search/Search';
 import { BreadCrumbs } from "../../components/BreadCrumbs/Breadcrumbs";
-import { ROUTE_LABELS } from '../../Routes';
+import { ROUTE_LABELS, ROUTES } from '../../Routes';
 import './WorkshopListPage.css';
-
+import { Link } from 'react-router-dom';
 // --- ИМПОРТЫ ДЛЯ РАБОТЫ С REDUX ---
 import type { RootState, AppDispatch } from '../../store/store'; 
 import { setSearchTerm } from '../../store/slices/filterSlice';
@@ -22,9 +22,14 @@ export const WorkshopListPage: React.FC = () => {
   // --- ПОЛУЧАЕМ ВСЕ ДАННЫЕ ИЗ REDUX STORE ---
   const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
   const { list: workshops, loading } = useSelector((state: RootState) => state.workshops);
-  const { itemCount } = useSelector((state: RootState) => state.application);
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { itemCount, isAuthenticated } = useSelector((state: RootState) => state.user);
 
+{isAuthenticated && (
+  <Link to={ROUTES.WORKSHOP_ORDERS} className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}>
+    <img src={`${import.meta.env.BASE_URL}img/cart.png`} alt="Корзина" />
+    <span className="cart-count">{itemCount}</span>
+  </Link>
+)}
   // useEffect для первоначальной загрузки данных.
   // Теперь он зависит только от dispatch и выполняется один раз.
   useEffect(() => {
@@ -62,10 +67,13 @@ export const WorkshopListPage: React.FC = () => {
             onSearchClick={handleSearch}
           />
           
-          <a href="#" className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}>
+          <Link 
+              to={ROUTES.WORKSHOP_ORDERS} 
+              className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}
+            >
               <img src={`${import.meta.env.BASE_URL}img/cart.png`} alt="Корзина" />
               <span className="cart-count">{itemCount}</span>
-          </a>
+            </Link>
         </div>
       </div>
 
@@ -84,6 +92,7 @@ export const WorkshopListPage: React.FC = () => {
           ) : (
             <p>Мастерские по вашему запросу не найдены.</p>
           )}
+          
         </div>
       </main>
     </div>

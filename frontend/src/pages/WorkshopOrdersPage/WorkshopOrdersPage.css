@@ -1,0 +1,154 @@
+/* src/pages/WorkshopOrdersPage/WorkshopOrdersPage.css */
+
+/* Общие стили */
+body {
+    background-color: #E9E9E9;
+}
+
+.page-wrapper-cart .main {
+    padding: 40px 0;
+}
+
+/* Строка фильтра */
+.filter-bar {
+    max-width: 1317px;
+    height: 52px;
+    border-radius: 22px;
+    background-color: #FFFFFF;
+    margin: 0 auto 25px auto;
+    display: flex;
+    align-items: center;
+    padding: 0 4px 0 20px;
+    box-sizing: border-box;
+}
+
+.filter-bar label {
+    font-size: 16px;
+    margin-right: 20px;
+    white-space: nowrap;
+}
+
+.filter-input {
+    width: 100%;
+    height: 44px;
+    border-radius: 22px;
+    background-color: #E9E9E9;
+    border: none;
+    outline: none;
+    padding: 0 20px;
+    font-size: 16px;
+}
+
+.save-button {
+    border: none;
+    border-radius: 22px;
+    height: 44px;
+    padding: 0 25px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+
+/* Заголовки для колонок */
+.application-header {
+    max-width: 1313px;
+    margin: 0 auto 10px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 155px 2fr 1.2fr 1.2fr 1fr auto;
+    gap: 30px;
+    align-items: center;
+}
+
+.header-label {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.header-label:first-child {
+    grid-column-start: 3;
+}
+
+.cart-items-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+}
+
+/* Стили для самой карточки-строки */
+.application-item {
+    width: 100%;
+    max-width: 1313px;
+    min-height: 191px;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    box-sizing: border-box;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 155px 2fr 1.2fr 1.2fr 1fr auto;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Картинка */
+.item-image {
+    width: 155px;
+    height: 155px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Блок с текстовой информацией */
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-title {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.item-description {
+    font-size: 14px;
+}
+
+.item-century {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.item-field input {
+    width: 100%;
+    max-width: 296px;
+    height: 44px;
+    border-radius: 22px;
+    padding: 0 15px;
+    border: 1px solid #DDDDDD;
+    font-size: 16px;
+}
+
+.remove-item-btn {
+    justify-self: center;
+}
+
+.application-summary {
+    max-width: 1313px;
+    margin: 25px auto 0 auto;
+    text-align: right;
+    font-weight: 400;
+}
+
+.cart-actions {
+    max-width: 1313px;
+    margin: 30px auto 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
