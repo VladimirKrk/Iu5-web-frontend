@@ -2,7 +2,7 @@ import { Api } from './Api';
 import type { RootState } from '../store/store'; // Импортируем только тип
 
 export const api = new Api({
-  baseURL: import.meta.env.BASE_URL,
+  baseURL: '/',
   securityWorker: (securityData) => {
     if (securityData) {
       return {

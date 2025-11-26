@@ -27,6 +27,7 @@ export default defineConfig({
         'script-src': ['self', 'unsafe-eval'],
         // Убираем лишние одинарные кавычки вокруг unsafe-inline
         'style-src': ['self', 'unsafe-inline'], 
+        'worker-src': ['self'],
       }
     }),
   ],
