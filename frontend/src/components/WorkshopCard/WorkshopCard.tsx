@@ -1,24 +1,31 @@
 import { Link } from 'react-router-dom';
-import type { IWorkshop } from "../../modules/WotkshopTypes";
+
+import type { ApiTypesWorkshopResponse as WorkshopResponse } from "../../api/Api";
 import './WorkshopCard.css';
 
-const getImageUrl = (key: string | null) => {
-    if (!key) return 'img/placeholder.png'; // Создайте этот файл-заглушку в public/img
-    if (key.startsWith('img/')) return key;
+const getImageUrl = (key: string | null | undefined) => {
+    // Добавим import.meta.env.BASE_URL для корректной работы с `base` в Vite
+    const baseUrl = import.meta.env.BASE_URL;
+    if (!key) return `${baseUrl}img/placeholder.png`;
+    if (key.startsWith('img/')) return `${baseUrl}${key}`;
     return `/vlk-images/${key}`;
 };
 
 interface WorkshopCardProps {
-  workshop: IWorkshop;
+  workshop: WorkshopResponse;
   onAddToCart: (workshopId: number) => void;
+  isAuthenticated: boolean; 
 }
 
-export const WorkshopCard: React.FC<WorkshopCardProps> = ({ workshop, onAddToCart }) => {
+export const WorkshopCard: React.FC<WorkshopCardProps> = ({ workshop, onAddToCart, isAuthenticated }) => {
   const imageUrl = getImageUrl(workshop.image_key);
 
   const handleAddToCartClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    onAddToCart(workshop.id);
+    // Убедимся, что ID существует, прежде чем вызывать функцию
+    if (workshop.id) {
+        onAddToCart(workshop.id);
+    }
   };
 
   return (
@@ -33,9 +40,19 @@ export const WorkshopCard: React.FC<WorkshopCardProps> = ({ workshop, onAddToCar
         <div className="card-footer">
           <p className="card-century">{workshop.century}</p>
           <Link to={`/workshops/${workshop.id}`} className="card-button">Подробнее</Link>
-          <button type="button" className="card-button card-button-primary" onClick={handleAddToCartClick}>
-            В корзину
-          </button>
+          
+          {/* --- 3. УСЛОВНЫЙ РЕНДЕРИНГ КНОПКИ --- */}
+          {isAuthenticated && (
+            <button 
+              type="button" 
+              className="card-button card-button-primary" 
+              onClick={handleAddToCartClick}
+              // Кнопка неактивна, если у мастерской нет ID
+              disabled={!workshop.id} 
+            >
+              В корзину
+            </button>
+          )}
         </div>
       </div>
     </div>

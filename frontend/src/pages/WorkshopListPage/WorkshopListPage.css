@@ -63,3 +63,10 @@
   margin: 0 auto;
   padding: 0 20px;
 }
+
+.page-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px; /* Чтобы было видно */
+}

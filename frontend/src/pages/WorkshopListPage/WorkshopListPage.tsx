@@ -1,47 +1,52 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Header from '../../components/Header/Header';
 import WorkshopList from '../../components/WorkshopList/WorkshopList';
 import Search from '../../components/Search/Search';
-import { BreadCrumbs } from "../../components/BreadCrumbs/Breadcrumbs.tsx";
-import { fetchWorkshops } from '../../modules/WorkshopApi';
-import type { IWorkshop } from "../../modules/WotkshopTypes";
+import { BreadCrumbs } from "../../components/BreadCrumbs/Breadcrumbs";
 import { ROUTE_LABELS } from '../../Routes';
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState, AppDispatch } from '../../store/store'; 
-import { setSearchTerm } from '../../store/slices/filterSlice'; 
 import './WorkshopListPage.css';
 
-interface WorkshopListPageProps {
-  itemCount: number;
-  onAddToCart: (workshopId: number) => void;
-}
+// --- ИМПОРТЫ ДЛЯ РАБОТЫ С REDUX ---
+import type { RootState, AppDispatch } from '../../store/store'; 
+import { setSearchTerm } from '../../store/slices/filterSlice';
+import { fetchWorkshopsAsync } from '../../store/slices/workshopSlice';
+import { addToCartAsync } from '../../store/slices/applicationSlice';
+import Spinner from 'react-bootstrap/esm/Spinner';
 
-export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, onAddToCart }) => {
-  const [workshops, setWorkshops] = useState<IWorkshop[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  
-  // searchTerm из Redux - это то, по чему мы УЖЕ выполнили поиск.
-  const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
+
+// Пропсы для этой страницы больше не нужны, так как все данные берутся из Redux
+export const WorkshopListPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  
+  // --- ПОЛУЧАЕМ ВСЕ ДАННЫЕ ИЗ REDUX STORE ---
+  const searchTerm = useSelector((state: RootState) => state.filter.searchTerm);
+  const { list: workshops, loading } = useSelector((state: RootState) => state.workshops);
+  const { itemCount } = useSelector((state: RootState) => state.application);
+  const { isAuthenticated } = useSelector((state: RootState) => state.user);
 
-  // inputValue - это то, что пользователь вводит в поле ПРЯМО СЕЙЧАС.
-  const [inputValue, setInputValue] = useState(searchTerm);
-
-  // useEffect теперь зависит только от searchTerm из Redux.
-  // Он сработает только тогда, когда мы нажмем кнопку "Найти".
+  // useEffect для первоначальной загрузки данных.
+  // Теперь он зависит только от dispatch и выполняется один раз.
   useEffect(() => {
-    setLoading(true);
-    fetchWorkshops(searchTerm)
-      .then(setWorkshops)
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  }, [searchTerm]);
+    dispatch(fetchWorkshopsAsync());
+  }, [dispatch]);
 
   // Эта функция будет вызвана при клике на кнопку поиска
   const handleSearch = () => {
-    // Мы диспатчим action, чтобы обновить searchTerm в Redux.
-    // Это, в свою очередь, вызовет useEffect для нового поиска.
-    dispatch(setSearchTerm(inputValue));
+    // Диспатчим thunk, который сам возьмет актуальный searchTerm из стора.
+    dispatch(fetchWorkshopsAsync());
+  };
+
+  // Новая функция для добавления в корзину через Redux
+  const handleAddToCart = async (workshopId: number) => {
+    try {
+      // Диспатчим асинхронный thunk и ждем его выполнения
+      await dispatch(addToCartAsync(workshopId)).unwrap();
+      alert('Мастерская успешно добавлена в корзину!');
+    } catch (error: any) {
+      // unwrap() пробросит ошибку из rejectWithValue, если она будет
+      alert(`Ошибка: ${error}`);
+    }
   };
 
   return (
@@ -52,13 +57,13 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
       <div className="search-section">
         <div className="search-container">
           <Search 
-            query={inputValue} // Поле ввода управляется inputValue
-            onQueryChange={setInputValue} // При вводе меняем только inputValue
-            onSearchClick={handleSearch} // При клике вызываем нашу функцию поиска
+            query={searchTerm}
+            onQueryChange={(query) => dispatch(setSearchTerm(query))}
+            onSearchClick={handleSearch}
           />
           
           <a href="#" className={itemCount > 0 ? "cart-link" : "cart-link cart-link-disabled"}>
-              <img src="img/cart.png" alt="Корзина" />
+              <img src={`${import.meta.env.BASE_URL}img/cart.png`} alt="Корзина" />
               <span className="cart-count">{itemCount}</span>
           </a>
         </div>
@@ -67,11 +72,17 @@ export const WorkshopListPage: React.FC<WorkshopListPageProps> = ({ itemCount, o
       <main className="main">
         <div className="container">
           {loading ? (
-            <p>Загрузка мастерских...</p>
+            <div className="page-loader">
+              <Spinner animation="border" />
+            </div>
+          ) : workshops.length > 0 ? (
+            <WorkshopList 
+              workshops={workshops} 
+              onAddToCart={handleAddToCart} 
+              isAuthenticated={isAuthenticated}
+            />
           ) : (
-            workshops.length > 0 
-              ? <WorkshopList workshops={workshops} onAddToCart={onAddToCart} />
-              : <p>Мастерские по вашему запросу не найдены.</p>
+            <p>Мастерские по вашему запросу не найдены.</p>
           )}
         </div>
       </main>

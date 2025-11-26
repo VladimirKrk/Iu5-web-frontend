@@ -11,10 +11,10 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "generate-api": "node scripts/generate-api.mjs" 
+    "generate-api": "node scripts/generate-api.mjs"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.10.1",
+    "@reduxjs/toolkit": "^2.11.0",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "react": "^19.1.1",
