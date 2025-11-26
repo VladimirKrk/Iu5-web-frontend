@@ -1,43 +1,76 @@
 // src/pages/WorkshopOrdersPage/WorkshopOrdersPage.tsx
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import { Spinner, Button } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
-import { fetchApplicationDetailsAsync, removeItemFromCartAsync, updateItemDefects } from '../../store/slices/applicationSlice';
+import { 
+  fetchApplicationDetailsAsync, 
+  removeItemFromCartAsync, 
+  updateItemDefects,
+  updateProductionNameAsync,
+  submitApplicationAsync,
+  deleteApplicationAsync
+} from '../../store/slices/applicationSlice';
 import { getImageUrl } from '../../utils/getImageUrl';
+import { ROUTES } from '../../Routes';
 import './WorkshopOrdersPage.css';
 
 export const WorkshopOrdersPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
     
-    // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
-    // Получаем ID заявки не из URL, а напрямую из userSlice
     const { draftApplicationId } = useSelector((state: RootState) => state.user);
-    // Детали заявки по-прежнему берем из applicationSlice
     const { details, loading, error } = useSelector((state: RootState) => state.application);
 
     const [productionName, setProductionName] = useState('');
 
     useEffect(() => {
-        // Запускаем загрузку, только если ID черновика известен
         if (draftApplicationId) {
             dispatch(fetchApplicationDetailsAsync(draftApplicationId));
         }
     }, [draftApplicationId, dispatch]);
     
     useEffect(() => {
-        if (details?.production_name) {
-            setProductionName(details.production_name);
-        }
+        // Устанавливаем имя, когда детали заявки загружаются или обновляются
+        setProductionName(details?.production_name || '');
     }, [details]);
+
+    // --- ОБРАБОТЧИКИ ДЕЙСТВИЙ ---
+
+    const handleSaveName = () => {
+        if (details?.id) {
+            dispatch(updateProductionNameAsync({ appId: details.id, name: productionName }));
+        }
+    };
+
+    const handleSubmitApp = () => {
+        if (details?.id) {
+            dispatch(submitApplicationAsync(details.id))
+                .unwrap()
+                .then(() => alert('Заявка успешно оформлена!'))
+                .catch(err => alert(`Ошибка: ${err}`));
+        }
+    };
+
+    const handleDeleteApp = () => {
+        if (details?.id && window.confirm('Вы уверены, что хотите удалить заявку?')) {
+            dispatch(deleteApplicationAsync(details.id))
+                .unwrap()
+                .then(() => navigate(ROUTES.WORKSHOPS));
+        }
+    };
 
     const handleRemoveItem = (workshopId?: number) => {
         if (details?.id && workshopId) {
             dispatch(removeItemFromCartAsync({ appId: details.id, workshopId }));
         }
     };
-    
+
+    // --- УСЛОВНЫЙ РЕНДЕРИНГ ---
+
+    // 1. Состояние начальной загрузки или отсутствия ID
     if (loading === 'pending' && !details) {
         return (
             <div className="page-wrapper-cart">
@@ -46,9 +79,9 @@ export const WorkshopOrdersPage: React.FC = () => {
             </div>
         );
     }
-
-    // Если нет ID черновика, показываем сообщение
-    if (!draftApplicationId) {
+    
+    // 2. Если нет активного черновика
+    if (!draftApplicationId && !loading) {
         return (
              <div className="page-wrapper-cart">
                 <Header />
@@ -57,23 +90,30 @@ export const WorkshopOrdersPage: React.FC = () => {
         )
     }
 
+    // 3. Основная разметка страницы
     return (
-        // ... остальная JSX-разметка остается без изменений ...
         <div className="page-wrapper-cart">
             <Header />
             <main className="main">
                 <div className="container">
                     <div className="filter-bar">
-                        <label>Введите название производства</label>
+                        <label>Название производства</label>
                         <input 
                             type="text" 
                             className="filter-input" 
                             placeholder="Название вашего производства..." 
                             value={productionName}
                             onChange={(e) => setProductionName(e.target.value)}
+                            disabled={details?.status !== 'draft' || loading === 'pending'}
                         />
-                        <button type="button" className="save-button">Сохранить</button>
+                        {details?.status === 'draft' && (
+                            <button type="button" className="save-button" onClick={handleSaveName} disabled={loading === 'pending'}>
+                                Сохранить
+                            </button>
+                        )}
                     </div>
+
+                    {error && <p className="text-danger" style={{ textAlign: 'center' }}>{error}</p>}
 
                     <div className="application-header">
                         <div className="header-label">Количество найденного брака</div>
@@ -81,33 +121,40 @@ export const WorkshopOrdersPage: React.FC = () => {
                     </div>
 
                     <div className="cart-items-wrapper">
-                        {details?.items?.map(item => (
-                            <div className="application-item" key={item.workshop?.id}>
-                                <img src={getImageUrl(item.workshop?.image_key)} alt={item.workshop?.name} className="item-image" />
-                                <div className="item-info">
-                                    <span className="item-title">{item.workshop?.name}</span>
-                                    <p className="item-description">{item.workshop?.description}</p>
+                        {details?.items && details.items.length > 0 ? (
+                            details.items.map(item => (
+                                <div className="application-item" key={item.workshop?.id}>
+                                    <img src={getImageUrl(item.workshop?.image_key)} alt={item.workshop?.name} className="item-image" />
+                                    <div className="item-info">
+                                        <span className="item-title">{item.workshop?.name}</span>
+                                        <p className="item-description">{item.workshop?.description}</p>
+                                    </div>
+                                    <div className="item-field">
+                                        <input 
+                                            type="number" 
+                                            value={item.found_defects ?? 0}
+                                            disabled={details?.status !== 'draft' || loading === 'pending'}
+                                            onChange={(e) => {
+                                                if(item.workshop?.id) {
+                                                    dispatch(updateItemDefects({ workshopId: item.workshop.id, defects: Number(e.target.value)}))
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="item-field">
+                                        <input type="text" value={item.predicted_output || '-'} readOnly />
+                                    </div>
+                                    <p className="item-century">{item.workshop?.century}</p>
+                                    {details?.status === 'draft' && (
+                                        <Button variant="danger" size="sm" className="remove-item-btn" onClick={() => handleRemoveItem(item.workshop?.id)} disabled={loading === 'pending'}>
+                                            Удалить
+                                        </Button>
+                                    )}
                                 </div>
-                                <div className="item-field">
-                                    <input 
-                                        type="number" 
-                                        value={item.found_defects ?? 0}
-                                        onChange={(e) => {
-                                            if(item.workshop?.id) {
-                                                dispatch(updateItemDefects({ workshopId: item.workshop.id, defects: Number(e.target.value)}))
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <div className="item-field">
-                                    <input type="text" value={item.predicted_output || '-'} readOnly />
-                                </div>
-                                <p className="item-century">{item.workshop?.century}</p>
-                                <Button variant="danger" size="sm" className="remove-item-btn" onClick={() => handleRemoveItem(item.workshop?.id)}>
-                                    Удалить
-                                </Button>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p style={{ textAlign: 'center' }}>Ваша заявка пуста.</p>
+                        )}
                     </div>
                     
                     <div className="application-summary">
@@ -115,8 +162,16 @@ export const WorkshopOrdersPage: React.FC = () => {
                     </div>
                     
                     <div className="cart-actions">
-                        <Button variant="primary">Оформить заявку</Button>
-                        <Button variant="outline-danger">Удалить заявку</Button>
+                        {details?.status === 'draft' && (
+                            <>
+                                <Button variant="primary" onClick={handleSubmitApp} disabled={loading === 'pending' || !details?.items?.length}>
+                                    Оформить заявку
+                                </Button>
+                                <Button variant="outline-danger" onClick={handleDeleteApp} disabled={loading === 'pending'}>
+                                    Удалить заявку
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             </main>

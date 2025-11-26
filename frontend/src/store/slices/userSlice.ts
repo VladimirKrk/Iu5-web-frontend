@@ -2,8 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { ApiTypesUserLoginRequest as UserLoginRequest } from '../../api/Api';
-import { fetchCartInfoAsync, addToCartAsync } from './applicationSlice';  // Импортируем thunk из другого слайса
-
+import { fetchCartInfoAsync, addToCartAsync , deleteApplicationAsync} from './applicationSlice';  // Импортируем thunk из другого слайса
 interface UserState {
   isAuthenticated: boolean;
   token: string | null;
@@ -96,9 +95,10 @@ const userSlice = createSlice({
           state.draftApplicationId = action.payload.application_id || null;
       })
       // При добавлении в корзину, просто увеличиваем счетчик
-      .addCase(addToCartAsync.fulfilled, (state) => {
-          state.itemCount += 1;
-      });
+      .addCase(deleteApplicationAsync.fulfilled, (state) => {
+        state.itemCount = 0;
+        state.draftApplicationId = null;
+    });
   },
 });
 

@@ -4,6 +4,7 @@ export const ROUTES = {
   WORKSHOP_DETAIL: "/workshops/:id",
   LOGIN: "/login", 
   WORKSHOP_ORDERS: "/orders",
+  
 };
 
 export type RouteKeyType = keyof typeof ROUTES;
