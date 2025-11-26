@@ -1,8 +1,10 @@
+// src/api/index.ts
 import { Api } from './Api';
-import type { RootState } from '../store/store'; // Импортируем только тип
+import type { RootState } from '../store/store';
 
 export const api = new Api({
-  baseURL: '/',
+
+  baseURL: '/api', 
   securityWorker: (securityData) => {
     if (securityData) {
       return {
@@ -13,6 +15,8 @@ export const api = new Api({
     }
   },
 });
+
+// ... остальной код initializeApi ...
 
 // Новая функция для инициализации
 export function initializeApi(store: { getState: () => RootState, subscribe: any }) {
