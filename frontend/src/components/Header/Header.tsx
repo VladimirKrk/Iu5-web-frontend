@@ -34,9 +34,11 @@ export default function Header() {
                   <button onClick={handleLogout} className="nav-link logout-btn">Выйти</button>
                 </>
               ) : (
-                <Link to={ROUTES.LOGIN} className="nav-link">
-                  Войти
-                </Link>
+                <>
+                  <Link to={ROUTES.LOGIN} className="nav-link">Войти</Link>
+                  {/* V-- ДОБАВЬТЕ ЭТУ ССЫЛКУ --V */}
+                  <Link to={ROUTES.REGISTER} className="nav-link">Регистрация</Link>
+                </>
               )}
             </nav>
         </div>

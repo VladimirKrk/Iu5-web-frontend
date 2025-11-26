@@ -6,7 +6,7 @@ import { WorkshopListPage } from './pages/WorkshopListPage/WorkshopListPage';
 import { WorkshopDetailPage } from './pages/WorkshopDetailPage/WorkshopDetailPage';
 import { LoginPage } from './pages/LoginPage/LoginPage';  // добавлен импорт LoginPage
 import { WorkshopOrdersPage } from './pages/WorkshopOrdersPage/WorkshopOrdersPage';
-
+import { RegisterPage } from './pages/RegisterPage/RegisterPage'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -35,6 +35,7 @@ function App() {
         <Route path={ROUTES.WORKSHOP_DETAIL} element={<WorkshopDetailPage />} />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.WORKSHOP_ORDERS} element={<WorkshopOrdersPage />} />
+        <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );

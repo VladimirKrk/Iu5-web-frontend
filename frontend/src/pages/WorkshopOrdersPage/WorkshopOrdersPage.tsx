@@ -1,10 +1,11 @@
 // src/pages/WorkshopOrdersPage/WorkshopOrdersPage.tsx
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; 
 import Header from '../../components/Header/Header';
 import { Spinner, Button } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
+
 import { 
   fetchApplicationDetailsAsync, 
   removeItemFromCartAsync, 
@@ -18,6 +19,7 @@ import { ROUTES } from '../../Routes';
 import './WorkshopOrdersPage.css';
 
 export const WorkshopOrdersPage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     
@@ -32,6 +34,13 @@ export const WorkshopOrdersPage: React.FC = () => {
         }
     }, [draftApplicationId, dispatch]);
     
+    useEffect(() => {
+        // Загружаем детали заявки по ID из URL
+        if (id) {
+            dispatch(fetchApplicationDetailsAsync(Number(id)));
+        }
+    }, [id, dispatch]);
+
     useEffect(() => {
         // Устанавливаем имя, когда детали заявки загружаются или обновляются
         setProductionName(details?.production_name || '');

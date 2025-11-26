@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { ApiTypesUserLoginRequest as UserLoginRequest } from '../../api/Api';
 import { fetchCartInfoAsync, addToCartAsync , deleteApplicationAsync} from './applicationSlice';  // Импортируем thunk из другого слайса
+import type { ApiTypesUserRegisterRequest as UserRegisterRequest } from '../../api/Api';
 interface UserState {
   isAuthenticated: boolean;
   token: string | null;
@@ -57,6 +58,20 @@ export const logoutUserAsync = createAsyncThunk(
     }
   }
 );
+
+export const registerUserAsync = createAsyncThunk(
+  'user/register',
+  async (credentials: UserRegisterRequest, { dispatch, rejectWithValue }) => {
+    try {
+      await api.register.registerCreate(credentials);
+      // После успешной регистрации сразу логиним пользователя
+      return dispatch(loginUserAsync(credentials)).unwrap();
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Ошибка регистрации');
+    }
+  }
+);
+
 
 const userSlice = createSlice({
   name: 'user',
