@@ -1,23 +1,43 @@
-import { Link } from 'react-router-dom';
+// src/components/Header/Header.tsx
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { ROUTES } from '../../Routes';
+import type { RootState, AppDispatch } from '../../store/store';
+import { logoutUserAsync } from '../../store/slices/userSlice';
+import { setSearchTerm } from '../../store/slices/filterSlice';
 import './Header.css';
 
-// 1. Создаем правильный URL для логотипа
-// import.meta.env.BASE_URL всегда будет содержать правильный префикс ('/Iu5-web-frontend/')
-const logoUrl = `${import.meta.env.BASE_URL}img/logo.png`;
-
 export default function Header() {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { isAuthenticated, username } = useSelector((state: RootState) => state.user);
+
+  const handleLogout = () => {
+    dispatch(logoutUserAsync());
+    dispatch(setSearchTerm('')); // Сбрасываем поиск при выходе
+    navigate(ROUTES.HOME); // Перенаправляем на главную
+  };
+
   return (
     <header className="header">
         <div className="header-container">
             <Link to={ROUTES.HOME} className="logo">
-                {/* 2. Используем созданную переменную */}
-                <img src={logoUrl} alt="VLK Logo" />
+                <img src={`${import.meta.env.BASE_URL}img/logo.png`} alt="VLK Logo" />
             </Link>
             <nav className="header-nav">
               <Link to={ROUTES.WORKSHOPS} className="nav-link">
                 Мастерские
               </Link>
+              {isAuthenticated ? (
+                <>
+                  <span className="nav-link username">{username}</span>
+                  <button onClick={handleLogout} className="nav-link logout-btn">Выйти</button>
+                </>
+              ) : (
+                <Link to={ROUTES.LOGIN} className="nav-link">
+                  Войти
+                </Link>
+              )}
             </nav>
         </div>
     </header>

@@ -1,7 +1,8 @@
 export const ROUTES = {
   HOME: "/",
   WORKSHOPS: "/workshops",
-  WORKSHOP_DETAIL: "/workshops/:id"
+  WORKSHOP_DETAIL: "/workshops/:id",
+  LOGIN: "/login", 
 };
 
 export type RouteKeyType = keyof typeof ROUTES;
@@ -9,5 +10,6 @@ export type RouteKeyType = keyof typeof ROUTES;
 export const ROUTE_LABELS: {[key in RouteKeyType]: string} = {
   HOME: "Главная",
   WORKSHOPS: "Мастерские",
-  WORKSHOP_DETAIL: "Мастерская" // Для "хлебных крошек"
+  WORKSHOP_DETAIL: "Мастерская", // Для "хлебных крошек"
+  LOGIN: "Вход",
 };

@@ -4,6 +4,7 @@ import { ROUTES } from "./Routes";
 import { HomePage } from './pages/HomePage/HomePage';
 import { WorkshopListPage } from './pages/WorkshopListPage/WorkshopListPage';
 import { WorkshopDetailPage } from './pages/WorkshopDetailPage/WorkshopDetailPage';
+import { LoginPage } from './pages/LoginPage/LoginPage';  // добавлен импорт LoginPage
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -31,6 +32,7 @@ function App() {
         {/* WorkshopListPage больше не нужны пропсы */}
         <Route path={ROUTES.WORKSHOPS} element={<WorkshopListPage />} />
         <Route path={ROUTES.WORKSHOP_DETAIL} element={<WorkshopDetailPage />} />
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -41,12 +41,23 @@
   color: #555555;
 }
 
+.username {
+  color: #888;
+  cursor: default;
+}
+.logout-btn {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  margin: 0;
+  font: inherit;
+  color: #000;
+  cursor: pointer;
+}
+.home-page-wrapper .logout-btn {
+  color: #fff;
+}
 
-/* ================================================= */
-/* ===        СПЕЦИАЛЬНЫЕ СТИЛИ ДЛЯ HOMEPAGE       === */
-/* === (эти правила работают, только когда хедер  === */
-/* ===   находится внутри .home-page-wrapper)    === */
-/* ================================================= */
 
 /* 1. Делаем сам хедер на главной странице прозрачным */
 .home-page-wrapper .header {
