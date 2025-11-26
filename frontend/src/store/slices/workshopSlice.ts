@@ -24,7 +24,7 @@ export const fetchWorkshopsAsync = createAsyncThunk(
     const searchTerm = state.filter.searchTerm; // <-- Берем поисковый запрос из filterSlice
 
     try {
-      const response = await api.workshops.workshopsList({ name: searchTerm });
+      const response = await api.workshops.workshopsList({ name: searchTerm }, { secure: true });
       return response.data;
     } catch (error) {
       console.error("ОШИБКА: Бэкенд не отвечает. Используем моковые данные.");

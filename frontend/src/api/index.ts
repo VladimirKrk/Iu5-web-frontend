@@ -1,6 +1,33 @@
 import { Api } from './Api';
+import type { RootState } from '../store/store'; // Импортируем только тип
 
 export const api = new Api({
-    // Указываем на прокси, который настроен в vite.config.ts
-    baseURL: import.meta.env.BASE_URL, 
+  baseURL: import.meta.env.BASE_URL,
+  securityWorker: (securityData) => {
+    if (securityData) {
+      return {
+        headers: {
+          Authorization: `Bearer ${securityData}`,
+        },
+      };
+    }
+  },
 });
+
+// Новая функция для инициализации
+export function initializeApi(store: { getState: () => RootState, subscribe: any }) {
+  let currentToken: string | null = null;
+  
+  const updateToken = () => {
+    const { token } = store.getState().user;
+    if (token && token !== currentToken) {
+      currentToken = token;
+      api.setSecurityData(currentToken);
+    }
+  };
+  
+  // Вызываем сразу, чтобы установить начальный токен
+  updateToken();
+  // И подписываемся на будущие изменения
+  store.subscribe(updateToken);
+}

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa';
 import basicSsl from '@vitejs/plugin-basic-ssl';
+import csp from 'vite-plugin-csp';
 
 export default defineConfig({
   base: '/Iu5-web-frontend/',
@@ -21,6 +22,13 @@ export default defineConfig({
       }
     }),
     basicSsl(),
+    csp({
+      policy: {
+        'script-src': ['self', 'unsafe-eval'],
+        // Убираем лишние одинарные кавычки вокруг unsafe-inline
+        'style-src': ['self', 'unsafe-inline'], 
+      }
+    }),
   ],
   server: {
     proxy: {

@@ -1,13 +1,17 @@
+// src/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import App from './App.tsx';
+import { initializeApi } from './api'; 
 import './index.css';
+
+
+initializeApi(store);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* <App /> */}
     <Provider store={store}>
       <App />
     </Provider>
