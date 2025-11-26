@@ -8,23 +8,23 @@ import { LoginPage } from './pages/LoginPage/LoginPage';  // добавлен и
 import { WorkshopOrdersPage } from './pages/WorkshopOrdersPage/WorkshopOrdersPage';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCartInfoAsync } from './store/slices/applicationSlice';
 import type { AppDispatch, RootState } from './store/store';
 
 function App() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  //const dispatch = useDispatch<AppDispatch>();
+  //const { isAuthenticated } = useSelector((state: RootState) => state.user);
   
-  useEffect(() => {
+  //useEffect(() => {
     // Загружаем корзину, только если пользователь авторизован
-    if (isAuthenticated) {
-      dispatch(fetchCartInfoAsync());
-    }
-  }, [isAuthenticated, dispatch]);
+  //  if (isAuthenticated) {
+  //    dispatch(fetchCartInfoAsync());
+  //  }
+  //}, [isAuthenticated, dispatch]);
   
-  // ... (убираем старый useEffect и handleAddToCart, они теперь в Redux)
 
   return (
     <BrowserRouter basename="/Iu5-web-frontend/">
@@ -36,6 +36,7 @@ function App() {
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.WORKSHOP_ORDERS} element={<WorkshopOrdersPage />} />
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+        <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );

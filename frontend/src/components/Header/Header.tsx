@@ -30,13 +30,12 @@ export default function Header() {
               </Link>
               {isAuthenticated ? (
                 <>
-                  <span className="nav-link username">{username}</span>
+                  <Link to={ROUTES.PROFILE} className="nav-link username">{username}</Link>
                   <button onClick={handleLogout} className="nav-link logout-btn">Выйти</button>
                 </>
               ) : (
                 <>
                   <Link to={ROUTES.LOGIN} className="nav-link">Войти</Link>
-                  {/* V-- ДОБАВЬТЕ ЭТУ ССЫЛКУ --V */}
                   <Link to={ROUTES.REGISTER} className="nav-link">Регистрация</Link>
                 </>
               )}

@@ -29,11 +29,13 @@ export const WorkshopOrdersPage: React.FC = () => {
     const [productionName, setProductionName] = useState('');
 
     useEffect(() => {
-        if (draftApplicationId) {
+        // V-- ИЗМЕНЯЕМ УСЛОВИЕ --V
+        // Запускаем загрузку, только если draftApplicationId - это число (не null)
+        if (typeof draftApplicationId === 'number') {
             dispatch(fetchApplicationDetailsAsync(draftApplicationId));
         }
     }, [draftApplicationId, dispatch]);
-    
+
     useEffect(() => {
         // Загружаем детали заявки по ID из URL
         if (id) {

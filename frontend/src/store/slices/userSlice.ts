@@ -35,7 +35,6 @@ export const loginUserAsync = createAsyncThunk(
       
       // Сразу после успешного логина, запускаем загрузку информации о корзине
       if (token) {
-        // Устанавливаем токен для будущих запросов
         api.setSecurityData(token); 
         dispatch(fetchCartInfoAsync());
       }
@@ -72,6 +71,18 @@ export const registerUserAsync = createAsyncThunk(
   }
 );
 
+export const updatePasswordAsync = createAsyncThunk(
+  'user/updatePassword',
+  async (password: string, { rejectWithValue }) => {
+    try {
+      // securityWorker сам подставит токен
+      const response = await api.users.putUsers({ password }, { secure: true });
+      return response.data; // Возвращаем обновленные данные пользователя
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Не удалось сменить пароль');
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: 'user',
@@ -113,7 +124,20 @@ const userSlice = createSlice({
       .addCase(deleteApplicationAsync.fulfilled, (state) => {
         state.itemCount = 0;
         state.draftApplicationId = null;
-    });
+    })
+    .addCase(updatePasswordAsync.pending, (state) => {
+        state.loading = 'pending';
+        state.error = null;
+      })
+      .addCase(updatePasswordAsync.fulfilled, (state) => {
+        state.loading = 'idle';
+        // Здесь можно, например, сбросить ошибку или показать сообщение об успехе
+        state.error = null; 
+      })
+      .addCase(updatePasswordAsync.rejected, (state, action) => {
+        state.loading = 'idle';
+        state.error = action.payload as string;
+      });
   },
 });
 
