@@ -1,8 +1,7 @@
 // src/store/slices/applicationSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
-import type { RootState } from '../store';
-import type { ApiTypesProductionItemResponse as ProductionItem, ApiTypesApplicationDetailedResponse as ApplicationDetails } from '../../api/Api';
+import type { ApiTypesApplicationDetailedResponse as ApplicationDetails } from '../../api/Api';
 
 interface AppState {
   details: ApplicationDetails | null;
@@ -109,6 +108,20 @@ export const deleteApplicationAsync = createAsyncThunk(
   }
 );
 
+export const updateItemDefectsAsync = createAsyncThunk(
+  'application/updateItemDefects',
+  async ({ appId, workshopId, defects }: { appId: number, workshopId: number, defects: number }, { rejectWithValue }) => {
+    try {
+      // Отправляем запрос на обновление
+      const response = await api.workshopProduction.itemsUpdate(appId, workshopId, { found_defects: defects }, { secure: true });
+      return response.data; // Возвращаем обновленный элемент
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Не удалось обновить данные о браке');
+    }
+  }
+);
+
+
 const applicationSlice = createSlice({
   name: 'application',
   initialState,
@@ -162,6 +175,17 @@ const applicationSlice = createSlice({
       .addCase(deleteApplicationAsync.fulfilled, (state) => {
         // При успешном удалении просто сбрасываем состояние слайса
         Object.assign(state, initialState);
+      })
+
+      .addCase(updateItemDefectsAsync.fulfilled, (state, action) => {
+        // Найдем и обновим элемент в нашем списке последними данными с сервера
+        const updatedItem = action.payload;
+        if (state.details?.items && updatedItem.workshop?.id) {
+          const itemIndex = state.details.items.findIndex(i => i.workshop?.id === updatedItem.workshop?.id);
+          if (itemIndex !== -1) {
+            state.details.items[itemIndex] = updatedItem;
+          }
+        }
       });
   },
 });

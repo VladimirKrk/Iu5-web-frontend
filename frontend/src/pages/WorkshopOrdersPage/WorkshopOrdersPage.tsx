@@ -1,11 +1,12 @@
 // src/pages/WorkshopOrdersPage/WorkshopOrdersPage.tsx
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom'; 
+import { useNavigate} from 'react-router-dom'; 
 import Header from '../../components/Header/Header';
 import { Spinner, Button, Table } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
 import { fetchOrdersHistoryAsync } from '../../store/slices/ordersHistorySlice';
+import { updateItemDefectsAsync } from '../../store/slices/applicationSlice';
 import { OrderFilters } from '../../components/OrderFilters/OrderFilters';
 
 import { 
@@ -28,6 +29,12 @@ export const WorkshopOrdersPage: React.FC = () => {
     const { list: historyList, loading: historyLoading } = useSelector((state: RootState) => state.ordersHistory);
 
     const [productionName, setProductionName] = useState('');
+
+    const handleSaveDefects = (workshopId?: number, defects?: number) => {
+        if (details?.id && workshopId !== undefined && defects !== undefined) {
+            dispatch(updateItemDefectsAsync({ appId: details.id, workshopId, defects }));
+        }
+    };
 
     useEffect(() => {
         // Если у нас есть ID черновика, загружаем его детали
@@ -73,7 +80,6 @@ export const WorkshopOrdersPage: React.FC = () => {
         }
     };
 
-    // --- УСЛОВНЫЙ РЕНДЕРИНГ ---
 
     // 1. Состояние начальной загрузки или отсутствия ID
     if (loading === 'pending' && !details) {
@@ -101,8 +107,7 @@ export const WorkshopOrdersPage: React.FC = () => {
             <Header />
             <main className="main">
                 <div className="container">
-                    {/* --- БЛОК ЧЕРНОВИКА --- */}
-                    <h1>Текущая заявка (Черновик)</h1>
+                    <h1>Текущая заявка</h1>
                     
                     {loading === 'pending' && <div className="page-loader" style={{ display: 'flex', justifyContent: 'center', paddingTop: '2rem' }}><Spinner animation="border" /></div>}
                     {error && <p className="text-danger">{error}</p>}
@@ -138,7 +143,29 @@ export const WorkshopOrdersPage: React.FC = () => {
                                                 <input type="text" value={item.predicted_output || '-'} readOnly />
                                             </div>
                                             <p className="item-century">{item.workshop?.century}</p>
-                                            <Button variant="danger" size="sm" className="remove-item-btn" onClick={() => handleRemoveItem(item.workshop?.id)}>Удалить</Button>
+                                            
+                                            <div className="item-actions">
+                                                {details?.status === 'draft' && (
+                                                    <>
+                                                        <Button 
+                                                            variant="outline-primary" 
+                                                            size="sm"
+                                                            onClick={() => handleSaveDefects(item.workshop?.id, item.found_defects)}
+                                                            disabled={loading === 'pending'}
+                                                        >
+                                                            Сохранить данные
+                                                        </Button>
+                                                        <Button 
+                                                            variant="outline-danger" 
+                                                            size="sm" 
+                                                            onClick={() => handleRemoveItem(item.workshop?.id)} 
+                                                            disabled={loading === 'pending'}
+                                                        >
+                                                            Удалить
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
@@ -154,11 +181,9 @@ export const WorkshopOrdersPage: React.FC = () => {
                             </div>
                         </>
                     ) : (
-                        // Сообщение, если черновика нет
                         !loading && <p>Активного черновика не найдено.</p>
                     )}
 
-                    {/* --- БЛОК ИСТОРИИ ЗАЯВОК --- */}
                     <hr className="my-5" />
                     <h2>История заявок</h2>
                     <OrderFilters />
@@ -172,7 +197,7 @@ export const WorkshopOrdersPage: React.FC = () => {
                                     <th>ID</th>
                                     <th>Статус</th>
                                     <th>Дата создания</th>
-                                    <th>Кол-во позиций</th>
+                                    <th>Количество результатов</th>
                                 </tr>
                             </thead>
                             <tbody>

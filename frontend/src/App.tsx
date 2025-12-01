@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ROUTES } from "./Routes";
 import { HomePage } from './pages/HomePage/HomePage';
@@ -10,9 +9,6 @@ import { RegisterPage } from './pages/RegisterPage/RegisterPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchCartInfoAsync } from './store/slices/applicationSlice';
-import type { AppDispatch, RootState } from './store/store';
 
 function App() {
   //const dispatch = useDispatch<AppDispatch>();

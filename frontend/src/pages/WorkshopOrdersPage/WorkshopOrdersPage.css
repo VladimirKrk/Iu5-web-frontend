@@ -152,3 +152,18 @@ body {
     justify-content: flex-end;
     gap: 1rem;
 }
+
+/* Стили для контейнера с кнопками в каждой строке */
+.item-actions {
+  display: flex;
+  flex-direction: column; 
+  gap: 0.5rem; 
+  justify-content: center; 
+}
+
+/* Сделаем все кнопки в этом блоке одинаковой ширины */
+.item-actions .btn {
+  width: 100%;
+  max-width: 150px; 
+  margin: 0 auto; 
+}
