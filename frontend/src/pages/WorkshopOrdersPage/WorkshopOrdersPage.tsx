@@ -6,6 +6,7 @@ import Header from '../../components/Header/Header';
 import { Spinner, Button, Table } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
 import { fetchOrdersHistoryAsync } from '../../store/slices/ordersHistorySlice';
+import { OrderFilters } from '../../components/OrderFilters/OrderFilters';
 
 import { 
   fetchApplicationDetailsAsync, 
@@ -160,6 +161,8 @@ export const WorkshopOrdersPage: React.FC = () => {
                     {/* --- БЛОК ИСТОРИИ ЗАЯВОК --- */}
                     <hr className="my-5" />
                     <h2>История заявок</h2>
+                    <OrderFilters />
+
                     {historyLoading === 'pending' ? (
                         <div style={{ display: 'flex', justifyContent: 'center' }}><Spinner animation="border" /></div>
                     ) : (
