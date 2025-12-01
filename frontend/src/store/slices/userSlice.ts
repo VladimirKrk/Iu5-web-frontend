@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { ApiTypesUserLoginRequest as UserLoginRequest } from '../../api/Api';
-import { fetchCartInfoAsync, addToCartAsync , deleteApplicationAsync} from './applicationSlice';  // Импортируем thunk из другого слайса
+import { fetchCartInfoAsync , deleteApplicationAsync} from './applicationSlice';  // Импортируем thunk из другого слайса
 import type { ApiTypesUserRegisterRequest as UserRegisterRequest } from '../../api/Api';
 interface UserState {
   isAuthenticated: boolean;
