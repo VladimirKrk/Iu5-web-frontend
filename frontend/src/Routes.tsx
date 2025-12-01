@@ -3,9 +3,10 @@ export const ROUTES = {
   WORKSHOPS: "/workshops",
   WORKSHOP_DETAIL: "/workshops/:id",
   LOGIN: "/login", 
-  WORKSHOP_ORDERS: "/orders/:id", 
+  WORKSHOP_ORDERS: "/orders", 
   REGISTER: "/register",
   PROFILE: "/profile",
+  
 };
 
 export type RouteKeyType = keyof typeof ROUTES;

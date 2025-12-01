@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom'; 
 import Header from '../../components/Header/Header';
-import { Spinner, Button } from 'react-bootstrap';
+import { Spinner, Button, Table } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
+import { fetchOrdersHistoryAsync } from '../../store/slices/ordersHistorySlice';
 
 import { 
   fetchApplicationDetailsAsync, 
@@ -17,34 +18,26 @@ import {
 import { getImageUrl } from '../../utils/getImageUrl';
 import { ROUTES } from '../../Routes';
 import './WorkshopOrdersPage.css';
-
 export const WorkshopOrdersPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     
     const { draftApplicationId } = useSelector((state: RootState) => state.user);
     const { details, loading, error } = useSelector((state: RootState) => state.application);
+    const { list: historyList, loading: historyLoading } = useSelector((state: RootState) => state.ordersHistory);
 
     const [productionName, setProductionName] = useState('');
 
     useEffect(() => {
-        // V-- ИЗМЕНЯЕМ УСЛОВИЕ --V
-        // Запускаем загрузку, только если draftApplicationId - это число (не null)
-        if (typeof draftApplicationId === 'number') {
+        // Если у нас есть ID черновика, загружаем его детали
+        if (draftApplicationId) {
             dispatch(fetchApplicationDetailsAsync(draftApplicationId));
         }
+        // И всегда загружаем историю заявок
+        dispatch(fetchOrdersHistoryAsync());
     }, [draftApplicationId, dispatch]);
-
+    
     useEffect(() => {
-        // Загружаем детали заявки по ID из URL
-        if (id) {
-            dispatch(fetchApplicationDetailsAsync(Number(id)));
-        }
-    }, [id, dispatch]);
-
-    useEffect(() => {
-        // Устанавливаем имя, когда детали заявки загружаются или обновляются
         setProductionName(details?.production_name || '');
     }, [details]);
 
@@ -107,83 +100,95 @@ export const WorkshopOrdersPage: React.FC = () => {
             <Header />
             <main className="main">
                 <div className="container">
-                    <div className="filter-bar">
-                        <label>Название производства</label>
-                        <input 
-                            type="text" 
-                            className="filter-input" 
-                            placeholder="Название вашего производства..." 
-                            value={productionName}
-                            onChange={(e) => setProductionName(e.target.value)}
-                            disabled={details?.status !== 'draft' || loading === 'pending'}
-                        />
-                        {details?.status === 'draft' && (
-                            <button type="button" className="save-button" onClick={handleSaveName} disabled={loading === 'pending'}>
-                                Сохранить
-                            </button>
-                        )}
-                    </div>
-
-                    {error && <p className="text-danger" style={{ textAlign: 'center' }}>{error}</p>}
-
-                    <div className="application-header">
-                        <div className="header-label">Количество найденного брака</div>
-                        <div className="header-label">Прогнозируемый объем</div>
-                    </div>
-
-                    <div className="cart-items-wrapper">
-                        {details?.items && details.items.length > 0 ? (
-                            details.items.map(item => (
-                                <div className="application-item" key={item.workshop?.id}>
-                                    <img src={getImageUrl(item.workshop?.image_key)} alt={item.workshop?.name} className="item-image" />
-                                    <div className="item-info">
-                                        <span className="item-title">{item.workshop?.name}</span>
-                                        <p className="item-description">{item.workshop?.description}</p>
-                                    </div>
-                                    <div className="item-field">
-                                        <input 
-                                            type="number" 
-                                            value={item.found_defects ?? 0}
-                                            disabled={details?.status !== 'draft' || loading === 'pending'}
-                                            onChange={(e) => {
-                                                if(item.workshop?.id) {
-                                                    dispatch(updateItemDefects({ workshopId: item.workshop.id, defects: Number(e.target.value)}))
-                                                }
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="item-field">
-                                        <input type="text" value={item.predicted_output || '-'} readOnly />
-                                    </div>
-                                    <p className="item-century">{item.workshop?.century}</p>
-                                    {details?.status === 'draft' && (
-                                        <Button variant="danger" size="sm" className="remove-item-btn" onClick={() => handleRemoveItem(item.workshop?.id)} disabled={loading === 'pending'}>
-                                            Удалить
-                                        </Button>
-                                    )}
-                                </div>
-                            ))
-                        ) : (
-                            <p style={{ textAlign: 'center' }}>Ваша заявка пуста.</p>
-                        )}
-                    </div>
+                    {/* --- БЛОК ЧЕРНОВИКА --- */}
+                    <h1>Текущая заявка (Черновик)</h1>
                     
-                    <div className="application-summary">
-                        {details?.items?.length || 0} позиций в заявке
-                    </div>
+                    {loading === 'pending' && <div className="page-loader" style={{ display: 'flex', justifyContent: 'center', paddingTop: '2rem' }}><Spinner animation="border" /></div>}
+                    {error && <p className="text-danger">{error}</p>}
                     
-                    <div className="cart-actions">
-                        {details?.status === 'draft' && (
-                            <>
-                                <Button variant="primary" onClick={handleSubmitApp} disabled={loading === 'pending' || !details?.items?.length}>
-                                    Оформить заявку
-                                </Button>
-                                <Button variant="outline-danger" onClick={handleDeleteApp} disabled={loading === 'pending'}>
-                                    Удалить заявку
-                                </Button>
-                            </>
-                        )}
-                    </div>
+                    {/* Показываем блок черновика, только если он есть */}
+                    {details && details.status === 'draft' ? (
+                        <>
+                            <div className="filter-bar">
+                                <label>Название производства</label>
+                                <input type="text" className="filter-input" value={productionName} onChange={(e) => setProductionName(e.target.value)} disabled={loading === 'pending'}/>
+                                <button type="button" className="save-button" onClick={handleSaveName} disabled={loading === 'pending'}>Сохранить</button>
+                            </div>
+
+                            <div className="application-header">
+                                <div className="header-label">Количество найденного брака</div>
+                                <div className="header-label">Прогнозируемый объем</div>
+                            </div>
+
+                            <div className="cart-items-wrapper">
+                                {details.items && details.items.length > 0 ? (
+                                    details.items.map(item => (
+                                        <div className="application-item" key={item.workshop?.id}>
+                                            {/* ... верстка application-item ... */}
+                                            <img src={getImageUrl(item.workshop?.image_key)} alt={item.workshop?.name} className="item-image" />
+                                            <div className="item-info">
+                                                <span className="item-title">{item.workshop?.name}</span>
+                                                <p className="item-description">{item.workshop?.description}</p>
+                                            </div>
+                                            <div className="item-field">
+                                                <input type="number" value={item.found_defects ?? 0} onChange={(e) => { if(item.workshop?.id) dispatch(updateItemDefects({ workshopId: item.workshop.id, defects: Number(e.target.value)})) }}/>
+                                            </div>
+                                            <div className="item-field">
+                                                <input type="text" value={item.predicted_output || '-'} readOnly />
+                                            </div>
+                                            <p className="item-century">{item.workshop?.century}</p>
+                                            <Button variant="danger" size="sm" className="remove-item-btn" onClick={() => handleRemoveItem(item.workshop?.id)}>Удалить</Button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p style={{ textAlign: 'center' }}>Черновик пуст. Добавьте мастерские со страницы "Мастерские".</p>
+                                )}
+                            </div>
+                            
+                            <div className="application-summary">{details.items?.length || 0} позиций в заявке</div>
+                            
+                            <div className="cart-actions">
+                                <Button variant="primary" onClick={handleSubmitApp} disabled={loading === 'pending' || !details.items?.length}>Оформить заявку</Button>
+                                <Button variant="outline-danger" onClick={handleDeleteApp} disabled={loading === 'pending'}>Удалить заявку</Button>
+                            </div>
+                        </>
+                    ) : (
+                        // Сообщение, если черновика нет
+                        !loading && <p>Активного черновика не найдено.</p>
+                    )}
+
+                    {/* --- БЛОК ИСТОРИИ ЗАЯВОК --- */}
+                    <hr className="my-5" />
+                    <h2>История заявок</h2>
+                    {historyLoading === 'pending' ? (
+                        <div style={{ display: 'flex', justifyContent: 'center' }}><Spinner animation="border" /></div>
+                    ) : (
+                        <Table striped bordered hover responsive>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Статус</th>
+                                    <th>Дата создания</th>
+                                    <th>Кол-во позиций</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {historyList.map(order => (
+                                    <tr key={order.id}>
+                                        <td>#{order.id}</td>
+                                        <td>{order.status}</td>
+                                        <td>{new Date(order.created_at || '').toLocaleDateString()}</td>
+                                        <td>{order.items_count}</td>
+                                    </tr>
+                                ))}
+                                {historyList.length === 0 && (
+                                    <tr>
+                                        <td colSpan={4} className="text-center">История заявок пуста.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </Table>
+                    )}
                 </div>
             </main>
         </div>

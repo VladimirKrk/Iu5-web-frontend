@@ -4,6 +4,7 @@ import filterReducer from './slices/filterSlice';
 import workshopReducer from './slices/workshopSlice';
 import userReducer from './slices/userSlice';
 import applicationReducer from './slices/applicationSlice';
+import ordersHistoryReducer from './slices/ordersHistorySlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     workshops: workshopReducer,
     user: userReducer,
     application: applicationReducer,
+    ordersHistory: ordersHistoryReducer,
   },
 });
 
