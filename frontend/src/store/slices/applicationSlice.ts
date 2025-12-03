@@ -82,12 +82,13 @@ export const updateProductionNameAsync = createAsyncThunk(
   }
 );
 
-// Thunk для оформления заявки (статус -> 'formed')
 export const submitApplicationAsync = createAsyncThunk(
   'application/submit',
-  async (appId: number, { rejectWithValue }) => {
+  async (appId: number, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.workshopApplications.formCreate(appId, { secure: true });
+      
+      dispatch(fetchCartInfoAsync());
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Не удалось оформить заявку');
@@ -126,6 +127,13 @@ const applicationSlice = createSlice({
   name: 'application',
   initialState,
   reducers: {
+    
+    setProductionName(state, action: { payload: string }) {
+        if (state.details) {
+            state.details.production_name = action.payload;
+        }
+    },
+
     updateItemDefects(state, action: { payload: { workshopId: number; defects: number } }) {
       const item = state.details?.items?.find(i => i.workshop?.id === action.payload.workshopId);
       if (item) {
@@ -190,5 +198,6 @@ const applicationSlice = createSlice({
   },
 });
 
-export const { updateItemDefects } = applicationSlice.actions;
+export const { setProductionName, updateItemDefects } = applicationSlice.actions;
 export default applicationSlice.reducer;
+

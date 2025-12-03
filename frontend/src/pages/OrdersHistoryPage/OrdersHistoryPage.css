@@ -1,0 +1,21 @@
+/* src/pages/OrdersHistoryPage/OrdersHistoryPage.css */
+
+.page-wrapper .main {
+    padding-top: 2rem;
+}
+
+/* Стили для контейнера с фильтрами */
+.filters-container {
+    background-color: #f8f9fa; /* Светло-серый фон */
+}
+
+/* Стили для "бейджей" статуса в таблице */
+.table .badge {
+    font-size: 0.85em; /* Немного увеличим шрифт */
+    padding: 0.5em 0.75em;
+}
+
+/* Выравнивание кнопки "Посмотреть" по центру ячейки */
+.table .text-center {
+    vertical-align: middle;
+}

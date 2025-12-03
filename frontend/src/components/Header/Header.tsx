@@ -31,6 +31,7 @@ export default function Header() {
               {isAuthenticated ? (
                 <>
                   <Link to={ROUTES.PROFILE} className="nav-link username">{username}</Link>
+                  <Link to={ROUTES.ORDERS_HISTORY} className="nav-link">История</Link>
                   <button onClick={handleLogout} className="nav-link logout-btn">Выйти</button>
                 </>
               ) : (

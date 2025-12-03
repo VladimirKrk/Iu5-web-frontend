@@ -8,7 +8,8 @@ import { WorkshopOrdersPage } from './pages/WorkshopOrdersPage/WorkshopOrdersPag
 import { RegisterPage } from './pages/RegisterPage/RegisterPage'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProfilePage } from './pages/ProfilePage/ProfilePage';
-
+import { OrderViewPage } from './pages/OrderViewPage/OrderViewPage';
+import { OrdersHistoryPage } from './pages/OrdersHistoryPage/OrdersHistoryPage';
 
 function App() {
   //const dispatch = useDispatch<AppDispatch>();
@@ -32,7 +33,9 @@ function App() {
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.WORKSHOP_ORDERS} element={<WorkshopOrdersPage />} />
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+        <Route path={ROUTES.ORDER_VIEW} element={<OrderViewPage />} /> 
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
+        <Route path={ROUTES.ORDERS_HISTORY} element={<OrdersHistoryPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -4,8 +4,10 @@ export const ROUTES = {
   WORKSHOP_DETAIL: "/workshops/:id",
   LOGIN: "/login", 
   WORKSHOP_ORDERS: "/orders", 
+  ORDER_VIEW: "/orders/:id",
   REGISTER: "/register",
   PROFILE: "/profile",
+  ORDERS_HISTORY: "/history",
   
 };
 
@@ -19,4 +21,6 @@ export const ROUTE_LABELS: {[key in RouteKeyType]: string} = {
   WORKSHOP_ORDERS: "/Заказы",
   REGISTER: "Регистрация",
   PROFILE: "Профиль",
+  ORDERS_HISTORY: "История",
+  ORDER_VIEW: "История заказа",
 };

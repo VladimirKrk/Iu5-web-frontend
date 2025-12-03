@@ -1,10 +1,11 @@
-/* src/pages/WorkshopOrdersPage/WorkshopOrdersPage.css */
+/* src/pages/OrderViewPage/OrderViewPage.css */
 
+/* Общие стили для страницы */
 .page-wrapper-cart .main {
     padding: 40px 0;
 }
 
-/* Строка фильтра */
+/* Стили для блока с названием производства */
 .filter-bar {
     max-width: 1317px;
     height: 52px;
@@ -13,7 +14,7 @@
     margin: 0 auto 25px auto;
     display: flex;
     align-items: center;
-    padding: 0 4px 0 20px;
+    padding: 0 20px;
     box-sizing: border-box;
 }
 
@@ -21,30 +22,13 @@
     font-size: 16px;
     margin-right: 20px;
     white-space: nowrap;
+    color: #555;
 }
 
-.filter-input {
-    width: 100%;
-    height: 44px;
-    border-radius: 22px;
-    background-color: #E9E9E9;
-    border: none;
-    outline: none;
-    padding: 0 20px;
-    font-size: 16px;
+.filter-input[readonly] {
+    background-color: #f8f9fa; /* Слегка серый фон для нередактируемого поля */
+    cursor: default;
 }
-
-.save-button {
-    border: none;
-    border-radius: 22px;
-    height: 44px;
-    padding: 0 25px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 10px;
-    white-space: nowrap;
-}
-
 
 /* Заголовки для колонок */
 .application-header {
@@ -53,14 +37,14 @@
     padding: 0 20px;
     box-sizing: border-box;
     display: grid;
-    /* Убедитесь, что здесь 6 столбцов, последний для item-actions */
-    grid-template-columns: 155px 2fr 1.2fr 1.2fr 1fr 1fr;
+    grid-template-columns: 155px 2fr 1.2fr 1.2fr 1fr;
     gap: 30px;
     align-items: center;
 }
 
 .header-label {
     font-size: 14px;
+    color: #333;
     white-space: nowrap;
 }
 
@@ -75,7 +59,7 @@
     gap: 22px;
 }
 
-/* Стили для самой карточки-строки */
+/* Стили для строки с элементом заявки */
 .application-item {
     width: 100%;
     max-width: 1313px;
@@ -85,13 +69,11 @@
     box-sizing: border-box;
     padding: 20px;
     display: grid;
-    /* 6 столбцов: img, info, брак, прогноз, век, действия */
-    grid-template-columns: 155px 2fr 1.2fr 1.2fr 1fr 1fr;
+    grid-template-columns: 155px 2fr 1.2fr 1.2fr 1fr; /* Убрали столбец для кнопок */
     align-items: center;
     gap: 30px;
 }
 
-/* Картинка */
 .item-image {
     width: 155px;
     height: 155px;
@@ -99,7 +81,6 @@
     border-radius: 8px;
 }
 
-/* Блок с текстовой информацией */
 .item-info {
     display: flex;
     flex-direction: column;
@@ -113,6 +94,7 @@
 
 .item-description {
     font-size: 14px;
+    color: #333;
 }
 
 .item-century {
@@ -121,14 +103,16 @@
     text-align: right;
 }
 
-.item-field input {
+.item-field input[readonly] {
     width: 100%;
     max-width: 296px;
     height: 44px;
     border-radius: 22px;
     padding: 0 15px;
     border: 1px solid #DDDDDD;
+    background-color: #f8f9fa; /* Серый фон */
     font-size: 16px;
+    cursor: default;
 }
 
 .application-summary {
@@ -136,26 +120,4 @@
     margin: 25px auto 0 auto;
     text-align: right;
     font-weight: 400;
-}
-
-.cart-actions {
-    max-width: 1313px;
-    margin: 30px auto 0 auto;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-/* Стили для контейнера с кнопками в каждой строке */
-.item-actions {
-  display: flex;
-  flex-direction: column; 
-  gap: 0.5rem; 
-  justify-content: center; 
-}
-
-.item-actions .btn {
-  width: 100%;
-  max-width: 150px; 
-  margin: 0 auto; 
 }
