@@ -30,12 +30,12 @@ export default function Header() {
               </Link>
               {isAuthenticated ? (
                 <>
-                  {isModerator ? (
-                    <Link to={ROUTES.MODERATOR_ORDERS} className="nav-link">Панель модератора</Link>
-                  ) : (
-                    <Link to={ROUTES.ORDERS_HISTORY} className="nav-link">История</Link>
-                  )}
+                  <Link to={ROUTES.ORDERS_HISTORY} className="nav-link">История</Link>
+                {isModerator && (
+                  <Link to={ROUTES.MODERATOR_ORDERS} className="nav-link">Панель проффесора истории</Link>
+                )}
                   <Link to={ROUTES.PROFILE} className="nav-link username">{username}</Link>
+
                   <button onClick={handleLogout} className="nav-link logout-btn">Выйти</button>
                 </>
                 

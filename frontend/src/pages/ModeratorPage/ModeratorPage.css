@@ -30,7 +30,14 @@
   gap: 0.5rem; /* Добавляем отступ между кнопками */
 }
 
-/* Задаем одинаковую минимальную ширину для всех кнопок действий */
+
 .table td.text-center .btn {
     min-width: 110px; /* Подберите значение, которое вам нравится */
+}
+
+*/
+.table td.text-center.fw-bold {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

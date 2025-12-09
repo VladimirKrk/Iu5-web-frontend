@@ -17,7 +17,7 @@ export const OrdersHistoryPage: React.FC = () => {
 
     useEffect(() => {
         // При заходе на страницу всегда загружаем историю
-        dispatch(fetchOrdersHistoryAsync());
+        dispatch(fetchOrdersHistoryAsync(true));
     }, [dispatch]);
 
     return (
@@ -37,7 +37,7 @@ export const OrdersHistoryPage: React.FC = () => {
                                     {/* Убираем колонку ID */}
                                     <th>Статус</th>
                                     <th>Дата создания</th>
-                                    <th>Кол-во позиций</th>
+                                    <th>Количество ответов</th>
                                     <th>Действия</th>
                                 </tr>
                             </thead>
@@ -46,7 +46,12 @@ export const OrdersHistoryPage: React.FC = () => {
                                     <tr key={order.id}>
                                         <td>{order.status}</td>
                                         <td>{new Date(order.created_at || '').toLocaleDateString('ru-RU')}</td>
-                                        <td>{order.items_count}</td>
+                                        <td>
+                                            <span className="fw-bold">
+                                                {order.calculated_items_count} / {order.items_count}
+                                            </span>
+                                        </td>
+
                                         <td>
                                             <Button variant="primary" size="sm" onClick={() => navigate(`/orders/${order.id}`)} >
                                                 Посмотреть

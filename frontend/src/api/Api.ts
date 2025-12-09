@@ -23,6 +23,8 @@ export interface ApiTypesApplicationDetailedResponse {
 }
 
 export interface ApiTypesApplicationResponse {
+  /** answers_count */
+  calculated_items_count?: number;
   completed_at?: string;
   created_at?: string;
   creator?: ApiTypesUserResponse;

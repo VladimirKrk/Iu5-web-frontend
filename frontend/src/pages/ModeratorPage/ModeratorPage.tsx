@@ -57,7 +57,7 @@ export const ModeratorPage: React.FC = () => {
             <Header />
             <main className="main">
                 <div className="container mt-4">
-                    <h1 className="mb-4">Панель модератора: Заявки</h1>
+                    <h1 className="mb-4">Панель проффесора истории: Заявки</h1>
                     <OrderFilters />
 
                     {historyLoading === 'pending' ? (
@@ -68,7 +68,7 @@ export const ModeratorPage: React.FC = () => {
                                 <tr>
                                     <th>Статус</th>
                                     <th>Дата создания</th>
-                                    <th>Кол-во позиций</th>
+                                    <th>Количество ответов</th>
                                     <th>Создатель</th>
                                     <th className="text-center">Действия</th>
                                 </tr>
@@ -78,7 +78,15 @@ export const ModeratorPage: React.FC = () => {
                                     <tr key={order.id}>
                                         <td><span className={`badge bg-${order.status === 'completed' ? 'success' : order.status === 'rejected' ? 'danger' : 'secondary'}`}>{order.status}</span></td>
                                         <td>{new Date(order.created_at || '').toLocaleDateString('ru-RU')}</td>
-                                        <td>{order.items_count}</td>
+                                        {order.status === 'completed' ? (
+                                            <td className="fw-bold">
+                                                {order.calculated_items_count} / {order.items_count}
+                                            </td>
+                                        ) : (
+                                            <td className="fw-bold">
+                                                -
+                                            </td>
+                                        )}
                                         <td>{order.creator?.login}</td>
                                         <td className="text-center">
                                             {order.status === 'formed' && (
