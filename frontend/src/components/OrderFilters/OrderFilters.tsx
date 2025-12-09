@@ -15,7 +15,7 @@ export const OrderFilters: React.FC = () => {
     const loading = useSelector((state: RootState) => state.ordersHistory.loading);
 
     const handleApplyFilters = () => {
-        dispatch(fetchOrdersHistoryAsync());
+        dispatch(fetchOrdersHistoryAsync(true));
     };
 
     return (
@@ -51,6 +51,7 @@ export const OrderFilters: React.FC = () => {
                             <option value="">Все</option>
                             <option value="formed">Сформирована</option>
                             <option value="completed">Завершена</option>
+                            <option value="rejected">Отклонена</option>
                         </Form.Select>
                     </Form.Group>
                 </Col>

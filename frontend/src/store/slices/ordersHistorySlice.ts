@@ -28,18 +28,17 @@ const initialState: OrdersHistoryState = {
 };
 export const fetchOrdersHistoryAsync = createAsyncThunk(
   'ordersHistory/fetchAll',
-  async (_, { getState, rejectWithValue }) => {
-    // Получаем фильтры из state
+  async (isPolling: boolean = false, { getState, rejectWithValue }) => {
     const { filters } = (getState() as RootState).ordersHistory;
     
     try {
-      // Передаем фильтры в API-запрос
       const response = await api.workshopApplications.workshopApplicationsList({
-        status: filters.status || undefined, // Отправляем undefined если строка пустая
+        status: filters.status || undefined,
         date_from: filters.dateFrom || undefined,
         date_to: filters.dateTo || undefined,
       }, { secure: true });
-      return response.data;
+      
+      return { data: response.data, isPolling }; 
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Не удалось загрузить историю');
     }
@@ -63,12 +62,16 @@ const ordersHistorySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchOrdersHistoryAsync.pending, (state) => {
-        state.loading = 'pending';
+      .addCase(fetchOrdersHistoryAsync.pending, (state, action) => {
+        // V-- ПОКАЗЫВАЕМ СПИННЕР, ТОЛЬКО ЕСЛИ ЭТО НЕ ФОНОВОЕ ОБНОВЛЕНИЕ --V
+        if (!action.meta.arg) { // action.meta.arg - это наш isPolling
+            state.loading = 'pending';
+        }
       })
       .addCase(fetchOrdersHistoryAsync.fulfilled, (state, action) => {
         state.loading = 'idle';
-        state.list = action.payload;
+        // action.payload теперь объект { data, isPolling }
+        state.list = action.payload.data;
       })
       .addCase(fetchOrdersHistoryAsync.rejected, (state, action) => {
         state.loading = 'idle';

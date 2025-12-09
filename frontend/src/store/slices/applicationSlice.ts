@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { ApiTypesApplicationDetailedResponse as ApplicationDetails } from '../../api/Api';
+import { fetchOrdersHistoryAsync } from './ordersHistorySlice';
 
 interface AppState {
   details: ApplicationDetails | null;
@@ -122,6 +123,31 @@ export const updateItemDefectsAsync = createAsyncThunk(
   }
 );
 
+export const completeApplicationAsync = createAsyncThunk(
+  'application/complete',
+  async (appId: number, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.workshopApplications.completeCreate(appId, { secure: true });
+      dispatch(fetchOrdersHistoryAsync(false)); // Обновляем список после действия
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Не удалось завершить заявку');
+    }
+  }
+);
+
+export const rejectApplicationAsync = createAsyncThunk(
+  'application/reject',
+  async (appId: number, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.workshopApplications.rejectCreate(appId, { secure: true });
+      dispatch(fetchOrdersHistoryAsync(false)); // Обновляем список после действия
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Не удалось отклонить заявку');
+    }
+  }
+);
 
 const applicationSlice = createSlice({
   name: 'application',

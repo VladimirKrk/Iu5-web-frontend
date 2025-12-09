@@ -7,6 +7,7 @@ export const ROUTES = {
   ORDER_VIEW: "/orders/:id",
   REGISTER: "/register",
   PROFILE: "/profile",
+  MODERATOR_ORDERS: "/moderator/orders",
   ORDERS_HISTORY: "/history",
   
 };
@@ -22,5 +23,6 @@ export const ROUTE_LABELS: {[key in RouteKeyType]: string} = {
   REGISTER: "Регистрация",
   PROFILE: "Профиль",
   ORDERS_HISTORY: "История",
+  MODERATOR_ORDERS: "Модерация заказов",
   ORDER_VIEW: "История заказа",
 };

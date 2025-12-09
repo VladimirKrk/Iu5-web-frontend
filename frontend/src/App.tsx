@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProfilePage } from './pages/ProfilePage/ProfilePage';
 import { OrderViewPage } from './pages/OrderViewPage/OrderViewPage';
 import { OrdersHistoryPage } from './pages/OrdersHistoryPage/OrdersHistoryPage';
+import { ModeratorPage } from './pages/ModeratorPage/ModeratorPage';
 
 function App() {
   //const dispatch = useDispatch<AppDispatch>();
@@ -36,6 +37,7 @@ function App() {
         <Route path={ROUTES.ORDER_VIEW} element={<OrderViewPage />} /> 
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
         <Route path={ROUTES.ORDERS_HISTORY} element={<OrdersHistoryPage />} />
+        <Route path={ROUTES.MODERATOR_ORDERS} element={<ModeratorPage />} />
       </Routes>
     </BrowserRouter>
   );

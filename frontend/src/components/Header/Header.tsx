@@ -10,7 +10,7 @@ import './Header.css';
 export default function Header() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isAuthenticated, username } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated, username, isModerator} = useSelector((state: RootState) => state.user);
 
   const handleLogout = () => {
     dispatch(logoutUserAsync());
@@ -30,10 +30,15 @@ export default function Header() {
               </Link>
               {isAuthenticated ? (
                 <>
+                  {isModerator ? (
+                    <Link to={ROUTES.MODERATOR_ORDERS} className="nav-link">Панель модератора</Link>
+                  ) : (
+                    <Link to={ROUTES.ORDERS_HISTORY} className="nav-link">История</Link>
+                  )}
                   <Link to={ROUTES.PROFILE} className="nav-link username">{username}</Link>
-                  <Link to={ROUTES.ORDERS_HISTORY} className="nav-link">История</Link>
                   <button onClick={handleLogout} className="nav-link logout-btn">Выйти</button>
                 </>
+                
               ) : (
                 <>
                   <Link to={ROUTES.LOGIN} className="nav-link">Войти</Link>

@@ -48,6 +48,7 @@ export interface ApiTypesErrorResponse {
 }
 
 export interface ApiTypesProductionItemResponse {
+  calculation_status?: string;
   found_defects?: number;
   predicted_output?: string;
   workshop?: ApiTypesWorkshopResponse;
@@ -276,11 +277,8 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title Workshop Production API
- * @version 1.0
+ * @title No title
  * @contact
- *
- * This is a service for calculating production output in workshops.
  */
 export class Api<
   SecurityDataType extends unknown,
@@ -524,6 +522,24 @@ export class Api<
     formCreate: (id: number, params: RequestParams = {}) =>
       this.request<ApiTypesApplicationDetailedResponse, ApiTypesErrorResponse>({
         path: `/workshop_applications/${id}/form`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Changes the status of a formed application to 'rejected'. Requires moderator rights.
+     *
+     * @tags Applications
+     * @name RejectCreate
+     * @summary Reject a formed application (Moderator only)
+     * @request POST:/workshop_applications/{id}/reject
+     * @secure
+     */
+    rejectCreate: (id: number, params: RequestParams = {}) =>
+      this.request<ApiTypesApplicationResponse, ApiTypesErrorResponse>({
+        path: `/workshop_applications/${id}/reject`,
         method: "POST",
         secure: true,
         format: "json",

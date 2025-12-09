@@ -4,10 +4,12 @@ import { api } from '../../api';
 import type { ApiTypesUserLoginRequest as UserLoginRequest } from '../../api/Api';
 import { fetchCartInfoAsync , deleteApplicationAsync} from './applicationSlice';  // Импортируем thunk из другого слайса
 import type { ApiTypesUserRegisterRequest as UserRegisterRequest } from '../../api/Api';
+import { jwtDecode } from 'jwt-decode';
 interface UserState {
   isAuthenticated: boolean;
   token: string | null;
   username: string | null;
+  isModerator: boolean;
   draftApplicationId: number | null; // ID активного черновика
   itemCount: number; // Общее количество товаров в черновике
   loading: 'idle' | 'pending';
@@ -19,6 +21,7 @@ const initialState: UserState = {
   token: null,
   username: null,
   draftApplicationId: null,
+  isModerator: false,
   itemCount: 0,
   loading: 'idle',
   error: null,
@@ -33,13 +36,20 @@ export const loginUserAsync = createAsyncThunk(
       const response = await api.login.loginCreate(credentials);
       const token = response.data.token;
       
-      // Сразу после успешного логина, запускаем загрузку информации о корзине
       if (token) {
         api.setSecurityData(token); 
         dispatch(fetchCartInfoAsync());
+
+        // V-- РАСШИФРОВЫВАЕМ ТОКЕН --V
+        const decodedToken: { is_moderator?: boolean } = jwtDecode(token);
+        
+        return { 
+            token, 
+            username: credentials.login,
+            isModerator: decodedToken.is_moderator || false 
+        };
       }
-      
-      return { token, username: credentials.login };
+      return rejectWithValue('Токен не получен');
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Ошибка авторизации');
     }
@@ -100,6 +110,7 @@ const userSlice = createSlice({
         state.isAuthenticated = true;
         state.token = action.payload.token || null;
         state.username = action.payload.username;
+        state.isModerator = action.payload.isModerator;
       })
       .addCase(loginUserAsync.rejected, (state, action) => {
         state.loading = 'idle';

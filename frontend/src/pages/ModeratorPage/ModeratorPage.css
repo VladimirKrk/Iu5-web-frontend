@@ -1,0 +1,36 @@
+/* src/pages/ModeratorPage/ModeratorPage.css */
+
+.page-wrapper .main .container {
+    max-width: 95%; /* Делаем контейнер шире для таблицы */
+}
+
+/* Стили для "бейджей" статуса в таблице */
+.table .badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.75em;
+    width: 100px; /* Фиксированная ширина для красоты */
+    text-align: center;
+}
+
+/* Центрирование контента в ячейках таблицы */
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/* Стили для ячейки с кнопками действий */
+
+.table .text-center {
+    min-width: 220px; 
+}
+
+.table td.text-center {
+  display: flex;
+  justify-content: flex-end; /* Прижимаем все кнопки к правому краю */
+  align-items: center;
+  gap: 0.5rem; /* Добавляем отступ между кнопками */
+}
+
+/* Задаем одинаковую минимальную ширину для всех кнопок действий */
+.table td.text-center .btn {
+    min-width: 110px; /* Подберите значение, которое вам нравится */
+}
