@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import type { RootState, AppDispatch } from '../../store/store'; 
 import { setSearchTerm } from '../../store/slices/filterSlice';
 import { fetchWorkshopsAsync } from '../../store/slices/workshopSlice';
-import { addToCartAsync } from '../../store/slices/applicationSlice';
+import { addToCartAsync } from '../../store/slices/workshopApplicationSlice';
 import Spinner from 'react-bootstrap/esm/Spinner';
 
 export const WorkshopListPage: React.FC = () => {

@@ -1,13 +1,13 @@
 // src/pages/ModeratorPage/ModeratorPage.tsx
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
-import { Spinner, Button, Table } from 'react-bootstrap';
+import { Spinner, Button, Table} from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
 import { fetchOrdersHistoryAsync } from '../../store/slices/ordersHistorySlice';
-import { OrderFilters } from '../../components/OrderFilters/OrderFilters';
-import { completeApplicationAsync, rejectApplicationAsync } from '../../store/slices/applicationSlice'; // Мы создадим их позже
+import { ModeratorOrderFilters } from '../../components/ModeratorOrderFilters/ModeratorOrderFilters';
+import { completeWorkshopApplicationAsync, rejectWorkshopApplicationAsync } from '../../store/slices/workshopApplicationSlice';
 import './ModeratorPage.css';
 
 export const ModeratorPage: React.FC = () => {
@@ -16,40 +16,45 @@ export const ModeratorPage: React.FC = () => {
 
     const { list: historyList, loading: historyLoading } = useSelector((state: RootState) => state.ordersHistory);
     const { isModerator } = useSelector((state: RootState) => state.user);
+    const creatorFilter = useSelector((state: RootState) => state.filter.searchTerm);
 
     useEffect(() => {
-        // Защита страницы: если пользователь не модератор, перекидываем его
         if (!isModerator) {
             navigate('/');
         }
     }, [isModerator, navigate]);
     
     useEffect(() => {
-        // Явно передаем 'false' для первичной загрузки
         dispatch(fetchOrdersHistoryAsync(false));
-
         const intervalId = setInterval(() => {
-            // Явно передаем 'true' для фоновых обновлений
             dispatch(fetchOrdersHistoryAsync(true)); 
         }, 5000);
-
         return () => clearInterval(intervalId);
     }, [dispatch]);
 
     const handleComplete = (appId?: number) => {
         if (appId) {
-            dispatch(completeApplicationAsync(appId));
+            dispatch(completeWorkshopApplicationAsync(appId));
         }
     };
 
     const handleReject = (appId?: number) => {
         if (appId) {
-            dispatch(rejectApplicationAsync(appId));
+            dispatch(rejectWorkshopApplicationAsync(appId));
         }
     };
 
+    const filteredHistoryList = useMemo(() => {
+        if (!creatorFilter) {
+            return historyList;
+        }
+        return historyList.filter(order => 
+            order.creator?.login?.toLowerCase().includes(creatorFilter.toLowerCase())
+        );
+    }, [historyList, creatorFilter]);
+
     if (!isModerator) {
-        return null; // Или можно показать спиннер, пока идет редирект
+        return null;
     }
 
     return (
@@ -57,10 +62,10 @@ export const ModeratorPage: React.FC = () => {
             <Header />
             <main className="main">
                 <div className="container mt-4">
-                    <h1 className="mb-4">Панель проффесора истории: Заявки</h1>
-                    <OrderFilters />
+                    <h1 className="mb-4">Панель проффесора истории</h1>
+                    <ModeratorOrderFilters />
 
-                    {historyLoading === 'pending' ? (
+                    {(historyLoading === 'pending' && !filteredHistoryList.length) ? (
                         <div className="text-center"><Spinner animation="border" /></div>
                     ) : (
                         <Table striped bordered hover responsive className="align-middle">
@@ -74,19 +79,11 @@ export const ModeratorPage: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {historyList.map(order => (
+                                {filteredHistoryList.map(order => (
                                     <tr key={order.id}>
                                         <td><span className={`badge bg-${order.status === 'completed' ? 'success' : order.status === 'rejected' ? 'danger' : 'secondary'}`}>{order.status}</span></td>
                                         <td>{new Date(order.created_at || '').toLocaleDateString('ru-RU')}</td>
-                                        {order.status === 'completed' ? (
-                                            <td className="fw-bold">
-                                                {order.calculated_items_count} / {order.items_count}
-                                            </td>
-                                        ) : (
-                                            <td className="fw-bold">
-                                                -
-                                            </td>
-                                        )}
+                                        <td className="text-center fw-bold">{order.calculated_items_count} / {order.items_count}</td>
                                         <td>{order.creator?.login}</td>
                                         <td className="text-center">
                                             {order.status === 'formed' && (
@@ -99,6 +96,11 @@ export const ModeratorPage: React.FC = () => {
                                         </td>
                                     </tr>
                                 ))}
+                                 {filteredHistoryList.length === 0 && (
+                                    <tr>
+                                        <td colSpan={5} className="text-center">Заявки не найдены.</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </Table>
                     )}

@@ -6,7 +6,7 @@ import Header from '../../components/Header/Header';
 import { Spinner, Button, Table } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
 import { fetchOrdersHistoryAsync } from '../../store/slices/ordersHistorySlice';
-import { OrderFilters } from '../../components/OrderFilters/OrderFilters';
+import { UserOrderFilters } from '../../components/UserOrderFilters/UserOrderFilters';
 import './OrdersHistoryPage.css'; // Можно создать пустой файл или скопировать стили, если нужны
 
 export const OrdersHistoryPage: React.FC = () => {
@@ -27,7 +27,7 @@ export const OrdersHistoryPage: React.FC = () => {
                 <div className="container">
                     <h1 className="mb-4">История заявок</h1>
                     
-                    <OrderFilters />
+                    <UserOrderFilters />
                     {historyLoading === 'pending' ? (
                         <div style={{ display: 'flex', justifyContent: 'center' }}><Spinner animation="border" /></div>
                     ) : (

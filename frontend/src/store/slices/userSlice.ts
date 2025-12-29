@@ -1,17 +1,22 @@
-// src/store/slices/userSlice.ts
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
-import type { ApiTypesUserLoginRequest as UserLoginRequest } from '../../api/Api';
-import { fetchCartInfoAsync , deleteApplicationAsync} from './applicationSlice';  // Импортируем thunk из другого слайса
-import type { ApiTypesUserRegisterRequest as UserRegisterRequest } from '../../api/Api';
+import type { ApiTypesUserLoginRequest as UserLoginRequest, ApiTypesUserRegisterRequest as UserRegisterRequest } from '../../api/Api';
 import { jwtDecode } from 'jwt-decode';
+
+import { 
+  fetchCartInfoAsync, 
+  deleteWorkshopApplicationAsync 
+} from './workshopApplicationSlice';
+
+
 interface UserState {
   isAuthenticated: boolean;
   token: string | null;
   username: string | null;
   isModerator: boolean;
-  draftApplicationId: number | null; // ID активного черновика
-  itemCount: number; // Общее количество товаров в черновике
+  draftApplicationId: number | null;
+  itemCount: number;
   loading: 'idle' | 'pending';
   error: string | null;
 }
@@ -40,7 +45,6 @@ export const loginUserAsync = createAsyncThunk(
         api.setSecurityData(token); 
         dispatch(fetchCartInfoAsync());
 
-        // V-- РАСШИФРОВЫВАЕМ ТОКЕН --V
         const decodedToken: { is_moderator?: boolean } = jwtDecode(token);
         
         return { 
@@ -132,10 +136,10 @@ const userSlice = createSlice({
           state.draftApplicationId = action.payload.application_id || null;
       })
       // При добавлении в корзину, просто увеличиваем счетчик
-      .addCase(deleteApplicationAsync.fulfilled, (state) => {
+      .addCase(deleteWorkshopApplicationAsync.fulfilled, (state) => {
         state.itemCount = 0;
         state.draftApplicationId = null;
-    })
+      })
     .addCase(updatePasswordAsync.pending, (state) => {
         state.loading = 'pending';
         state.error = null;

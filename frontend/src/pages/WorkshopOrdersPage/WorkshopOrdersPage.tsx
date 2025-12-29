@@ -1,25 +1,22 @@
-// src/pages/WorkshopOrdersPage/WorkshopOrdersPage.tsx
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate} from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; 
 import Header from '../../components/Header/Header';
-import { Spinner, Button} from 'react-bootstrap';
+import { Spinner, Button } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
-import { updateItemDefectsAsync } from '../../store/slices/applicationSlice';
-
-
 import { 
-  fetchApplicationDetailsAsync, 
+  fetchWorkshopApplicationDetailsAsync, 
   removeItemFromCartAsync, 
-  updateItemDefects,
+  updateItemDefectsAsync,
   updateProductionNameAsync,
-  submitApplicationAsync,
-  deleteApplicationAsync,
+  submitWorkshopApplicationAsync,
+  deleteWorkshopApplicationAsync,
   setProductionName
-} from '../../store/slices/applicationSlice';
+} from '../../store/slices/workshopApplicationSlice';
 import { getImageUrl } from '../../utils/getImageUrl';
 import { ROUTES } from '../../Routes';
 import './WorkshopOrdersPage.css';
+
 export const WorkshopOrdersPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
@@ -27,21 +24,11 @@ export const WorkshopOrdersPage: React.FC = () => {
     const { draftApplicationId } = useSelector((state: RootState) => state.user);
     const { details, loading, error } = useSelector((state: RootState) => state.application);
 
-
-    const handleSaveDefects = (workshopId?: number, defects?: number) => {
-        if (details?.id && workshopId !== undefined && defects !== undefined) {
-            dispatch(updateItemDefectsAsync({ appId: details.id, workshopId, defects }));
-        }
-    };
-
     useEffect(() => {
-        if (typeof draftApplicationId === 'number') {
-            dispatch(fetchApplicationDetailsAsync(draftApplicationId));
+        if (draftApplicationId) {
+            dispatch(fetchWorkshopApplicationDetailsAsync(draftApplicationId));
         }
     }, [draftApplicationId, dispatch]);
-
-
-    // --- ОБРАБОТЧИКИ ДЕЙСТВИЙ ---
 
     const handleSaveName = () => {
         if (details?.id && details.production_name) {
@@ -51,11 +38,10 @@ export const WorkshopOrdersPage: React.FC = () => {
 
     const handleSubmitApp = () => {
         if (details?.id) {
-            dispatch(submitApplicationAsync(details.id))
+            dispatch(submitWorkshopApplicationAsync(details.id))
                 .unwrap()
                 .then(() => {
                     alert('Заявка успешно оформлена!');
-                    // redirecting on workshop page
                     navigate(ROUTES.WORKSHOPS);
                 })
                 .catch(err => alert(`Ошибка: ${err}`));
@@ -64,7 +50,7 @@ export const WorkshopOrdersPage: React.FC = () => {
 
     const handleDeleteApp = () => {
         if (details?.id && window.confirm('Вы уверены, что хотите удалить заявку?')) {
-            dispatch(deleteApplicationAsync(details.id))
+            dispatch(deleteWorkshopApplicationAsync(details.id))
                 .unwrap()
                 .then(() => navigate(ROUTES.WORKSHOPS));
         }
@@ -76,8 +62,12 @@ export const WorkshopOrdersPage: React.FC = () => {
         }
     };
 
+    const handleSaveDefects = (workshopId?: number, defects?: number) => {
+        if (details?.id && workshopId !== undefined && defects !== undefined) {
+            dispatch(updateItemDefectsAsync({ appId: details.id, workshopId, defects }));
+        }
+    };
 
-    // 1. Состояние начальной загрузки или отсутствия ID
     if (loading === 'pending' && !details) {
         return (
             <div className="page-wrapper-cart">
@@ -87,7 +77,6 @@ export const WorkshopOrdersPage: React.FC = () => {
         );
     }
     
-    // 2. Если нет активного черновика
     if (!draftApplicationId && !loading) {
         return (
              <div className="page-wrapper-cart">
@@ -97,7 +86,6 @@ export const WorkshopOrdersPage: React.FC = () => {
         )
     }
 
-    // 3. Основная разметка страницы
     return (
         <div className="page-wrapper-cart">
             <Header />
@@ -120,9 +108,11 @@ export const WorkshopOrdersPage: React.FC = () => {
                                     onChange={(e) => dispatch(setProductionName(e.target.value))}
                                     disabled={loading === 'pending'}
                                 />
-                                <button type="button" className="save-button" onClick={handleSaveName} disabled={loading === 'pending'}>
-                                    Сохранить
-                                </button>
+                                {details?.status === 'draft' && (
+                                    <button type="button" className="save-button" onClick={handleSaveName} disabled={loading === 'pending'}>
+                                        Сохранить
+                                    </button>
+                                )}
                             </div>
                             <div className="application-header">
                                 <div className="header-label">Количество найденного брака</div>
@@ -145,18 +135,16 @@ export const WorkshopOrdersPage: React.FC = () => {
                                                 value={item.found_defects ?? 0}
                                                 disabled={loading === 'pending'}
                                                 onChange={(e) => {
-                                                    if(item.workshop?.id) {
-                                                        dispatch(updateItemDefects({ workshopId: item.workshop.id, defects: Number(e.target.value)}))
+                                                    if(item.workshop?.id && details.id) {
+                                                        dispatch(updateItemDefectsAsync({ appId: details.id, workshopId: item.workshop.id, defects: Number(e.target.value)}))
                                                     }
                                                 }}
                                             />
                                         </div>
                                         
-                                    
                                         <div className="item-field">
                                             <input type="text" value={item.predicted_output || '-'} readOnly />
                                         </div>
-
                                         
                                         <div className="item-actions">
                                             <Button 

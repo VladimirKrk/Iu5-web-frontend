@@ -3,15 +3,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import filterReducer from './slices/filterSlice';
 import workshopReducer from './slices/workshopSlice';
 import userReducer from './slices/userSlice';
-import applicationReducer from './slices/applicationSlice';
 import ordersHistoryReducer from './slices/ordersHistorySlice';
+import workshopApplicationReducer from './slices/workshopApplicationSlice';
 
 export const store = configureStore({
   reducer: {
     filter: filterReducer,
     workshops: workshopReducer,
     user: userReducer,
-    application: applicationReducer,
+    application: workshopApplicationReducer,
     ordersHistory: ordersHistoryReducer,
   },
 });

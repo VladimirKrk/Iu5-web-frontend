@@ -5,11 +5,10 @@ import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import { Spinner } from 'react-bootstrap';
 import type { AppDispatch, RootState } from '../../store/store';
-import { fetchApplicationDetailsAsync } from '../../store/slices/applicationSlice';
+import { fetchWorkshopApplicationDetailsAsync } from '../../store/slices/workshopApplicationSlice';
 import { getImageUrl } from '../../utils/getImageUrl';
 import './OrderViewPage.css';
 
-// Этот компонент будет использоваться повторно
 const ApplicationItemView = ({ item }: { item: any }) => (
     <div className="application-item">
         <img src={getImageUrl(item.workshop?.image_key)} alt={item.workshop?.name} className="item-image" />
@@ -35,7 +34,7 @@ export const OrderViewPage: React.FC = () => {
 
     useEffect(() => {
         if (id) {
-            dispatch(fetchApplicationDetailsAsync(Number(id)));
+            dispatch(fetchWorkshopApplicationDetailsAsync(Number(id)));
         }
     }, [id, dispatch]);
 
@@ -62,7 +61,7 @@ export const OrderViewPage: React.FC = () => {
                             </div>
 
                             <div className="cart-items-wrapper">
-                                {details.items?.map(item => <ApplicationItemView key={item.workshop?.id} item={item} />)}
+                                {details.items?.map((item: any) => <ApplicationItemView key={item.workshop?.id} item={item} />)}
                             </div>
                             
                             <div className="application-summary">

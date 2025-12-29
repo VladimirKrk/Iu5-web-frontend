@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import { api } from '../../api';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ApiTypesApplicationResponse as Application } from '../../api/Api';
-import type { RootState } from '../store'; // Импортируем RootState
+import type { RootState } from '../store'; 
+import { getTodayDateString } from '../../utils/getDate';
 
 
 interface OrdersHistoryState {
@@ -22,8 +23,8 @@ const initialState: OrdersHistoryState = {
   error: null,
   filters: {
     status: '',
-    dateFrom: '',
-    dateTo: '',
+    dateFrom: getTodayDateString(), 
+    dateTo: getTodayDateString(), 
   },
 };
 export const fetchOrdersHistoryAsync = createAsyncThunk(
@@ -48,7 +49,6 @@ export const fetchOrdersHistoryAsync = createAsyncThunk(
 const ordersHistorySlice = createSlice({
   name: 'ordersHistory',
   initialState,
-  // --- НОВЫЕ РЕДЬЮСЕРЫ ДЛЯ УПРАВЛЕНИЯ ФИЛЬТРАМИ ---
   reducers: {
     setStatusFilter(state, action: PayloadAction<string>) {
       state.filters.status = action.payload;
